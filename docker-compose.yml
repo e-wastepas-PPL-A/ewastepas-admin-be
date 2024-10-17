@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      args:
+        user: linkyi
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: linkyi-api
+    container_name: linkyi-api
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - linkyi-bridge
+
+  nginx:
+    image: nginx:alpine
+    container_name: linkyi-nginx
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8021:80
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - linkyi-bridge
+  
+networks:
+  linkyi-bridge:
+    external: true
