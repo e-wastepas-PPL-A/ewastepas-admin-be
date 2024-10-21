@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DropboxController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -49,6 +50,12 @@ Route::prefix('admins')->group(function () {
     Route::post('/update-status/{id}', [AdminController::class, 'updateStatus']);
     Route::delete('/delete/{id}', [AdminController::class, 'delete']);
 });
+
+Route::get('/dropbox', [DropboxController::class, 'index']);
+Route::get('/dropbox/{id}', [DropboxController::class, 'show']);
+Route::post('/dropbox/create', [DropboxController::class, 'create']);
+Route::post('/dropbox/update/{id}', [DropboxController::class, 'update']);
+Route::delete('/dropbox/delete/{id}', [DropboxController::class, 'delete']);
 
 Route::prefix('auth')->group(function () {
 
