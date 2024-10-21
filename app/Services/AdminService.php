@@ -65,13 +65,12 @@ class AdminService
 
         try {
             DB::beginTransaction();
-
             Admin::create([
-                'id' => str()->uuid(),
+                // 'id' => LinkHelper::generateId(),
                 'name'  => $data['name'],
                 'email'  => $data['email'],
-                'password'  => Hash::make('pasword123'),
-                'status' => 'ACTIVED'
+                'password'  => Hash::make($data['password']),
+                'status' => $data['status']
             ]);
             DB::commit();
             return [true, 'Berhasil Menambahkan admin', []];
@@ -81,91 +80,71 @@ class AdminService
             return [false, 'Server is busy right now!', []];
         }
     }
-    // public function updateProduct($data, $id)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $user = auth()->user();
-    //         $storeId = $user->store->id;
-    //         $product = Product::where(['id' => $id, 'store_id' => $storeId])->first();
-    //         if (!$product) {
-    //             return [false, 'Produk tidak ditemukan', []];
-    //         }
-    //         //> check apakah katagori sudah ada
-    //         if ($product?->productCategory?->name != $data['category']) {
-    //             $productCategory = ProductCategory::where(['name' => $data['category'], 'store_id' => $storeId])->first();
-    //             if (!$productCategory) {
-    //                 $sequence = ProductCategory::where(['store_id' => $storeId])->count();
-    //                 $productCategory = ProductCategory::create([
-    //                     'name' => $data['category'],
-    //                     'slug' => str()->slug($data['category']),
-    //                     'store_id' => $storeId,
-    //                     'sequence' => $sequence + 1
-    //                 ]);
-    //             }
-    //         }
 
+    public function updateAdmin($data, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $admin = Admin::where(['id' => $id])->first();
+            if (!$admin) {
+                return [false, 'Admin tidak ditemukan', []];
+            }
 
+            $payload = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+            ];
 
-    //         $payload = [
-    //             'product_category_id' => $productCategory->id,
-    //             'title' => $data['title'],
-    //             'price' => $data['price'],
-    //         ];
+            if (isset($data['password'])) {
+                $payload['password'] = Hash::make($data['password']);
+            }
 
-    //         if (isset($data['thumbnail'])) {
-    //             LinkyiStorage::deleteProductThumbnail($product->thumbnail);
-    //             $payload['thumbnail'] = LinkyiStorage::uploadProductThumbnail($data['thumbnail']);
-    //         }
-    //         if (isset($data['is_active'])) {
-    //             $payload['is_active'] = $data['is_active'];
-    //         }
-    //         //> create produk
-    //         $product->update($payload);
+            //> create produk
+            $admin->update($payload);
 
-    //         DB::commit();
-    //         return [true, 'Berhasil Memperbaharui Produk', []];
-    //     } catch (\Throwable $exception) {
-    //         DB::rollBack();
-    //         Log::error($exception);
-    //         return [false, 'Server is busy right now!', []];
-    //     }
-    // }
-    // public function updateStatusProduct($data, $id)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $user = auth()->user();
-    //         $storeId = $user->store->id;
-    //         $product = Product::where(['id' => $id, 'store_id' => $storeId])->first();
-    //         if (!$product) {
-    //             return [false, 'Produk tidak ditemukan', []];
-    //         }
+            DB::commit();
+            return [true, 'Berhasil Memperbaharui Admin', []];
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error($exception);
+            return [false, 'Server is busy right now!', []];
+        }
+    }
 
-    //         if ($data['is_active'] == 1) {
-    //             $message = "diaktifkan";
-    //         } else {
-    //             $message = "dinonaktifkan";
-    //         }
-    //         //> create produk
-    //         $product->update([
-    //             'is_active' => $data['is_active'],
-    //         ]);
+    public function updateStatusAdmin($data, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $admin = Admin::where(['id' => $id])->first();
+            if (!$admin) {
+                return [false, 'Admin tidak ditemukan', []];
+            }
 
-    //         DB::commit();
-    //         return [true, 'Produk berhasil ' . $message, []];
-    //     } catch (\Throwable $exception) {
-    //         DB::rollBack();
-    //         Log::error($exception);
-    //         return [false, 'Server is busy right now!', []];
-    //     }
-    // }
+            if ($data['is_active'] == 'active') {
+                $message = "diaktifkan";
+            } else {
+                $message = "dinonaktifkan";
+            }
+
+            //> create produk
+            $admin->update([
+                'status' => $data['is_active'],
+            ]);
+
+            DB::commit();
+            return [true, 'Admin berhasil ' . $message, []];
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error($exception);
+            return [false, 'Server is busy right now!', []];
+        }
+    }
 
     public function detailAdmin($id)
     {
         $admin = Admin::where(['id' => $id])->first();
         if (!$admin) {
-            return [false, 'Admin tidak ditemukan', []];
+            return [false, 'Admin tidak ditemukan', [$id]];
         }
 
         $response = [
@@ -176,31 +155,22 @@ class AdminService
         return [true, "Detail admin", $response];
     }
 
-    // public function deleteProduct($id)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-    //         $user = Auth()->user();
-
-    //         $product = Product::where(['id' => $id, 'store_id' => $user->store->id])->first();
-
-    //         if (!$product) {
-    //             return [false, "Produk tidak ditemukan", []];
-    //         }
-
-    //         //>habus total views & klik
-    //         ProductView::where(['store_id' => $user->store->id, 'product_id' => $product->id])->delete();
-    //         LinkProduct::where(['product_id' => $product->id])->delete();
-    //         //>delete thumbnail
-    //         LinkyiStorage::deleteProductThumbnail($product->thumbnail);
-    //         $product->delete();
-    //         DB::commit();
-    //         return [true, 'Produk berhasil dihapus', []];
-    //     } catch (\Throwable $exception) {
-    //         DB::rollBack();
-    //         Log::error($exception);
-    //         return [false, 'Server is busy right now!', []];
-    //     }
-    // }
+    public function deleteAdmin($id)
+    {
+        try {
+            DB::beginTransaction();
+            $admin = Admin::where(['id' => $id])->first();
+            if (!$admin) {
+                return [false, "Admin tidak ditemukan", []];
+            }
+            $admin->delete();
+            DB::commit();
+            return [true, 'Admin berhasil dihapus', []];
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error($exception);
+            return [false, 'Server is busy right now!', []];
+        }
+    }
 
 }

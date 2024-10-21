@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateAdminRequest extends FormRequest
+class UpdateStatusAdminRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,19 +25,14 @@ class CreateAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100',
-            'email' => 'required|email|max:100',
+            'is_active' => 'required|in:active,inactive'
         ];
     }
-
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama perlu diisi.',
-            'name.max' => 'Nama tidak boleh lebih dari 100 karakter.',
-            'email.required' => 'Email perlu diisi.',
-            'email.email' => 'Email harus dalam format yang valid.',
-            'email.max' => 'Email tidak boleh lebih dari 100 karakter.',
+            'is_active.required' => 'Status perlu diisi.',
+            'is_active.in' => 'Status tidak valid',
         ];
     }
 
