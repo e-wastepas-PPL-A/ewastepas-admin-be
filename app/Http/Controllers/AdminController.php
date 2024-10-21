@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
 use App\Http\Requests\CreateAdminRequest;
+use App\Http\Requests\UpdateAdminRequest;
+use App\Http\Requests\UpdateStatusAdminRequest;
 use App\Services\AdminService;
 
 class AdminController extends Controller
@@ -37,24 +39,26 @@ class AdminController extends Controller
         }
         return ResponseJson::successResponse($message, $data);
     }
-    // public function update(UpdateProductRequest $request, $id)
-    // {
-    //     [$proceed, $message, $data] = (new ProductService())->updateProduct($request->all(), $id);
 
-    //     if (!$proceed) {
-    //         return ResponseJson::failedResponse($message, $data);
-    //     }
-    //     return ResponseJson::successResponse($message, $data);
-    // }
-    // public function updateStatus(UpdateStatusProductRequest $request, $id)
-    // {
-    //     [$proceed, $message, $data] = (new ProductService())->updateStatusProduct($request->all(), $id);
+    public function update(UpdateAdminRequest $request, $id)
+    {
+        [$proceed, $message, $data] = (new AdminService())->updateAdmin($request->all(), $id);
 
-    //     if (!$proceed) {
-    //         return ResponseJson::failedResponse($message, $data);
-    //     }
-    //     return ResponseJson::successResponse($message, $data);
-    // }
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
+
+    public function updateStatus(UpdateStatusAdminRequest $request, $id)
+    {
+        [$proceed, $message, $data] = (new AdminService())->updateStatusAdmin($request->all(), $id);
+
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
 
     public function show($id)
     {
@@ -65,12 +69,13 @@ class AdminController extends Controller
         }
         return ResponseJson::successResponse($message, $data);
     }
-    // public function delete($id)
-    // {
-    //     [$proceed, $message, $data] = (new ProductService())->deleteProduct($id);
-    //     if (!$proceed) {
-    //         return ResponseJson::failedResponse($message, $data);
-    //     }
-    //     return ResponseJson::successResponse($message, $data);
-    // }
+
+    public function delete($id)
+    {
+        [$proceed, $message, $data] = (new AdminService())->deleteAdmin($id);
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
 }

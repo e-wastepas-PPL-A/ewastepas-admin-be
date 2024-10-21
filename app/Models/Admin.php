@@ -12,5 +12,5 @@ class Admin extends Model
     protected $table = 'admins';
 
     protected $fillable = ['id', 'email', 'name', 'password', 'status'];
-    public $incrementing = false;
+    public $incrementing = true;
 }

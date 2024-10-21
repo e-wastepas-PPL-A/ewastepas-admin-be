@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateAdminRequest extends FormRequest
+class UpdateAdminRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,10 @@ class CreateAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100',
-            'email' => 'required|email|max:100',
+            'name' => 'required|max:40', // Ganti 'title' dengan 'name' jika sesuai
+            'email' => 'sometimes|email|max:100', // Tambahkan atau ubah sesuai dengan kebutuhan admin
+            'password' => 'sometimes|nullable|min:6', // Menambahkan validasi untuk password jika perlu
+            // Tambahkan aturan lain jika diperlukan
         ];
     }
 
@@ -34,10 +36,10 @@ class CreateAdminRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama perlu diisi.',
-            'name.max' => 'Nama tidak boleh lebih dari 100 karakter.',
-            'email.required' => 'Email perlu diisi.',
-            'email.email' => 'Email harus dalam format yang valid.',
+            'name.max' => 'Nama tidak boleh lebih dari 40 karakter.',
+            'email.email' => 'Format email tidak valid.',
             'email.max' => 'Email tidak boleh lebih dari 100 karakter.',
+            'password.min' => 'Password minimal 6 karakter.',
         ];
     }
 

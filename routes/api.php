@@ -41,10 +41,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 
-Route::get('/admins', [AdminController::class, 'index']);
-Route::get('/admins/{id}', [AdminController::class, 'show']);
-Route::post('/admins', [AdminController::class, 'create']);
-
+Route::prefix('admins')->group(function () {
+    Route::get('', [AdminController::class, 'index']);
+    Route::get('/{id}', [AdminController::class, 'show']);
+    Route::post('/create', [AdminController::class, 'create']);
+    Route::post('/update/{id}', [AdminController::class, 'update']);
+    Route::post('/update-status/{id}', [AdminController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [AdminController::class, 'delete']);
+});
 
 Route::prefix('auth')->group(function () {
 
