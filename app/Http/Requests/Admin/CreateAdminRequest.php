@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
@@ -25,7 +25,7 @@ class CreateAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100',
+            'nama' => 'required|max:100',
             'email' => 'required|email|max:100',
         ];
     }
@@ -33,8 +33,8 @@ class CreateAdminRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama perlu diisi.',
-            'name.max' => 'Nama tidak boleh lebih dari 100 karakter.',
+            'nama.required' => 'Nama perlu diisi.',
+            'nama.max' => 'Nama tidak boleh lebih dari 100 karakter.',
             'email.required' => 'Email perlu diisi.',
             'email.email' => 'Email harus dalam format yang valid.',
             'email.max' => 'Email tidak boleh lebih dari 100 karakter.',

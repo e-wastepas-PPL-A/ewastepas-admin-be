@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
-use App\Http\Requests\Admin\CreateAdminRequest;
-use App\Http\Requests\Admin\UpdateAdminRequest;
-use App\Http\Requests\Admin\UpdateStatusAdminRequest;
-use App\Services\AdminService;
+use App\Http\Requests\Kurir\CreateKurirRequest;
+use App\Http\Requests\Kurir\UpdateKurirRequest;
+use App\Http\Requests\Kurir\UpdateStatusKurirRequest;
+use App\Services\KurirService;
 
-class AdminController extends Controller
+class KurirController extends Controller
 {
     public function index()
     {
@@ -22,7 +22,7 @@ class AdminController extends Controller
             $filter = null;
         }
 
-        [$proceed, $message, $data] = (new AdminService())->listAdmin($limit, $search, $filter);
+        [$proceed, $message, $data] = (new KurirService())->listKurir($limit, $search, $filter);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -30,9 +30,9 @@ class AdminController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function create(CreateAdminRequest $request)
+    public function create(CreateKurirRequest $request)
     {
-        [$proceed, $message, $data] = (new AdminService())->createAdmin($request->all());
+        [$proceed, $message, $data] = (new KurirService())->createKurir($request->all());
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -40,9 +40,9 @@ class AdminController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function update(UpdateAdminRequest $request, $id)
+    public function update(UpdateKurirRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new AdminService())->updateAdmin($request->all(), $id);
+        [$proceed, $message, $data] = (new KurirService())->updateKurir($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -50,9 +50,9 @@ class AdminController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function updateStatus(UpdateStatusAdminRequest $request, $id)
+    public function updateStatus(UpdateStatusKurirRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new AdminService())->updateStatusAdmin($request->all(), $id);
+        [$proceed, $message, $data] = (new KurirService())->updateStatusKurir($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -62,7 +62,7 @@ class AdminController extends Controller
 
     public function show($id)
     {
-        [$proceed, $message, $data] = (new AdminService())->detailAdmin($id);
+        [$proceed, $message, $data] = (new KurirService())->detailKurir($id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -72,7 +72,7 @@ class AdminController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new AdminService())->deleteAdmin($id);
+        [$proceed, $message, $data] = (new KurirService())->deleteKurir($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }

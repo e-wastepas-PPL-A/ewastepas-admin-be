@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KurirController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DropboxController;
@@ -51,11 +52,22 @@ Route::prefix('admins')->group(function () {
     Route::delete('/delete/{id}', [AdminController::class, 'delete']);
 });
 
-Route::get('/dropbox', [DropboxController::class, 'index']);
-Route::get('/dropbox/{id}', [DropboxController::class, 'show']);
-Route::post('/dropbox/create', [DropboxController::class, 'create']);
-Route::post('/dropbox/update/{id}', [DropboxController::class, 'update']);
-Route::delete('/dropbox/delete/{id}', [DropboxController::class, 'delete']);
+Route::prefix('kurir')->group(function () {
+    Route::get('', [KurirController::class, 'index']);
+    Route::get('/{id}', [KurirController::class, 'show']);
+    Route::post('/create', [KurirController::class, 'create']);
+    Route::post('/update/{id}', [KurirController::class, 'update']);
+    Route::post('/update-status/{id}', [KurirController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [KurirController::class, 'delete']);
+});
+
+Route::prefix('dropbox')->group(function () {
+    Route::get('', [DropboxController::class, 'index']);
+    Route::get('/{id}', [DropboxController::class, 'show']);
+    Route::post('/create', [DropboxController::class, 'create']);
+    Route::post('/update/{id}', [DropboxController::class, 'update']);
+    Route::delete('/delete/{id}', [DropboxController::class, 'delete']);
+});
 
 Route::prefix('auth')->group(function () {
 

@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dropboxes', function (Blueprint $table) {
-            $table->id('DropboxID');
-            $table->string('LocationName');
-            $table->string('Address');
+            $table->uuid('id_dropbox')->primary();
+            $table->string('alamat_dropbox');
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->uuid('id_user');
+            $table->foreign('id_user')->references('id_user')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

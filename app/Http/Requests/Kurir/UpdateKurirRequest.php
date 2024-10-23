@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Dropbox;
+namespace App\Http\Requests\Kurir;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateDropboxRequest extends FormRequest
+class UpdateKurirRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,22 +25,21 @@ class CreateDropboxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'alamat_dropbox' => 'required|max:100',
-            'longitude' => 'required',
-            'latitude' => 'required',
-            // 'created_at' => 'required|date',
+            'name' => 'sometimes|max:40', // Ganti 'title' dengan 'name' jika sesuai
+            'email' => 'sometimes|email|max:100', // Tambahkan atau ubah sesuai dengan kebutuhan admin
+            'password' => 'sometimes|nullable|min:6', // Menambahkan validasi untuk password jika perlu
+            // Tambahkan aturan lain jika diperlukan
         ];
     }
 
     public function messages(): array
     {
         return [
-            'alamat_dropbox.required' => 'Alamat Dropbox perlu diisi.',
-            'alamat_dropbox.max' => 'Alamat Dropbox maksimal 100 karakter.',
-            'longitude.required' => 'Longitude perlu diisi.',
-            'latitude.required' => 'Latitude perlu diisi.',
-            // 'created_at.required' => 'Created At perlu diisi.',
-            // 'created_at.date' => 'Created At harus dalam format tanggal yang valid.',
+            // 'name.required' => 'Nama perlu diisi.',
+            'name.max' => 'Nama tidak boleh lebih dari 40 karakter.',
+            'email.email' => 'Format email tidak valid.',
+            'email.max' => 'Email tidak boleh lebih dari 100 karakter.',
+            'password.min' => 'Password minimal 6 karakter.',
         ];
     }
 

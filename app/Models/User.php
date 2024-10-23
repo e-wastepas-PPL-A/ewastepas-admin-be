@@ -19,46 +19,66 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'google_id',
-        'status',
-        'email_verified_at'
+        'id_user', 'Nama', 'Email', 'No_Telp', 'Tgl_Lahir', 'Alamat', 'NIK', 
+        'No_Rek', 'KTP_URL', 'KK_URL', 'Foto', 'Total_Point', 
+        'Berat_Sampah', 'Roles'
     ];
-    const STATUS_VERIFIED = 'verified';
-    const STATUS_UNVERIFIED = 'unverified';
+    
+     // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'password',
+    //     'google_id',
+    //     'status',
+    //     'email_verified_at'
+    // ];
+
+    // const STATUS_VERIFIED = 'verified';
+    // const STATUS_UNVERIFIED = 'unverified';
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
 
-    public $incrementing = false;
+    public $incrementing = true;
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
+
+    public function dropboxes(): HasMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Dropbox::class, 'id_user', 'id_user');
     }
 
-    public function store(): HasOne
+    public function penjemputanSampah(): HasMany
     {
-        return $this->hasOne(Store::class, 'user_id', 'id');
+        return $this->hasMany(PenjemputanSampah::class, 'id_user', 'id_user');
     }
-    public function storeStatus()
-    {
-        return $this?->store != null;
-    }
+
+    // public function store(): HasOne
+    // {
+    //     return $this->hasOne(Store::class, 'user_id', 'id');
+    // }
+    // public function storeStatus()
+    // {
+    //     return $this?->store != null;
+    // }
 }
