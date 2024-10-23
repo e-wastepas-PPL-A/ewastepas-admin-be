@@ -30,7 +30,7 @@ class DropboxService
 
             $data = tap(
                 Dropbox::when($search, function ($query) use ($search) {
-                    return $query->where("LocationName", 'LIKE', "%$search%");
+                    return $query->where("alamat_dropbox", 'LIKE', "%$search%");
                 })->when($sort, function ($query) use ($sort) {
                     return $query->orderBy('created_at', $sort);
                 })->paginate($limit),
@@ -40,9 +40,10 @@ class DropboxService
                         ->transform(function ($item) {
 
                             return [
-                                'DropboxID' => $item->DropboxID,
-                                'LocationName' => $item->LocationName,
-                                'Address' => $item->Address,
+                                'id_dropbox' => $item->id_dropbox,
+                                'alamat_dropbox' => $item->alamat_dropbox,
+                                'longitude' => $item->longitude,
+                                'latitude' => $item->latitude,
                             ];
                         });
                 }
@@ -52,7 +53,7 @@ class DropboxService
             $data->withPath($limit);
 
             $response = [
-                'products' => $data
+                'dropbox' => $data
             ];
             return [true, 'List Dropbox', $response];
         } catch (\Throwable $exception) {
@@ -68,8 +69,10 @@ class DropboxService
             DB::beginTransaction();
             Dropbox::create([
                 // 'id' => LinkHelper::generateId(),
-                'LocationName'  => $data['LocationName'],
-                'Address'  => $data['Address'],
+                'alamat_dropbox' => $data['alamat_dropbox'],
+                'longitude' => $data['longitude'],
+                'latitude' => $data['latitude'],
+                'id_user' => $data['id_user'],
                 'created_at'  => now()
             ]);
             DB::commit();

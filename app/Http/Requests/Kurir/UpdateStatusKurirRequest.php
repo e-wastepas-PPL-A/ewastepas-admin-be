@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Kurir;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateStatusAdminRequest extends FormRequest
+class UpdateStatusKurirRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +25,14 @@ class UpdateStatusAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_active' => 'required|in:active,inactive'
+            'roles' => 'required|in:0,1,2,3'
         ];
     }
     public function messages(): array
     {
         return [
-            'is_active.required' => 'Status perlu diisi.',
-            'is_active.in' => 'Status tidak valid',
+            'roles.required' => 'Role perlu diisi.',
+            'roles.in' => 'Role tidak valid',
         ];
     }
 

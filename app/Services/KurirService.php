@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class AdminService
+class KurirService
 {
-    public function listAdmin($limit, $search, $filter)
+    public function listKurir($limit, $search, $filter)
     {
         try {
             $user = Auth()->user();
@@ -61,16 +61,16 @@ class AdminService
             $data->withPath($limit);
 
             $response = [
-                'Admin' => $data
+                'Kurir' => $data
             ];
-            return [true, 'List Admin', $response];
+            return [true, 'List Kurir', $response];
         } catch (\Throwable $exception) {
             Log::error($exception);
             return [false, 'Server is busy right now', []];
         }
     }
 
-    public function createAdmin($data)
+    public function createKurir($data)
     {
 
         try {
@@ -92,7 +92,7 @@ class AdminService
             ]);
 
             DB::commit();
-            return [true, 'Berhasil Menambahkan admin', []];
+            return [true, 'Berhasil Menambahkan Kurir', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);
@@ -100,13 +100,13 @@ class AdminService
         }
     }
 
-    public function updateAdmin($data, $id)
+    public function updateKurir($data, $id)
     {
         try {
             DB::beginTransaction();
-            $admin = User::where(['id_user' => $id])->first();
-            if (!$admin) {
-                return [false, 'Admin tidak ditemukan', []];
+            $kurir = User::where(['id_user' => $id])->first();
+            if (!$kurir) {
+                return [false, 'Kurir tidak ditemukan', []];
             }
 
             $payload = [
@@ -128,7 +128,7 @@ class AdminService
             User::where(['id_user' => $id])->update($payload);
 
             DB::commit();
-            return [true, 'Berhasil Memperbaharui Admin', []];
+            return [true, 'Berhasil Memperbaharui Kurir', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);
@@ -136,28 +136,27 @@ class AdminService
         }
     }
 
-    public function updateStatusAdmin($data, $id)
+    public function updateStatusKurir($data, $id)
     {
         try {
             DB::beginTransaction();
-            $admin = User::where(['id_user' => $id])->first();
-            if (!$admin) {
-                return [false, 'Admin tidak ditemukan', []];
+            $kurir = User::where(['id_user' => $id])->first();
+            if (!$kurir) {
+                return [false, 'Kurir tidak ditemukan', []];
             }
 
-            if ($admin->No_Rek == null || $admin->KTP_URL == null || $admin->KK_URL == null || $admin->Foto == null || $admin->NIK == null) {
-                return [false, 'Data admin belum lengkap', []];
-            } else if ($admin->Roles == 1) {
-                return [false, 'admin sudah aktif', []];
+            if ($kurir->No_Rek == null || $kurir->KTP_URL == null || $kurir->KK_URL == null || $kurir->Foto == null || $kurir->NIK == null) {
+                return [false, 'Data kurir belum lengkap', []];
+            } else if ($kurir->Roles == 'kurir') {
+                return [false, 'Kurir sudah aktif', []];
             }
-            
-            //> create produk
-            $admin->update([
+
+            $kurir->update([
                 'Roles' => $data['Roles'],
             ]);
 
             DB::commit();
-            return [true, 'Admin berhasil diaktifkan', []];
+            return [true, 'Kurir berhasil diaktifkan', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);
@@ -165,11 +164,11 @@ class AdminService
         }
     }
 
-    public function detailAdmin($id)
+    public function detailKurir($id)
     {
-        $admin = User::where(['id_user' => $id])->first();
-        if (!$admin) {
-            return [false, 'Admin tidak ditemukan', [$id]];
+        $kurir = User::where(['id_user' => $id])->first();
+        if (!$kurir) {
+            return [false, 'Kurir tidak ditemukan', [$id]];
         }
 
         $response = [
@@ -185,20 +184,20 @@ class AdminService
             'Foto' => $item->foto,
             'Roles' => $item->roles,
         ];
-        return [true, "Detail admin", $response];
+        return [true, "Detail kurir", $response];
     }
 
-    public function deleteAdmin($id)
+    public function deleteKurir($id)
     {
         try {
             DB::beginTransaction();
-            $admin = User::where(['id_user' => $id])->first();
-            if (!$admin) {
-                return [false, "Admin tidak ditemukan", []];
+            $kurir = User::where(['id_user' => $id])->first();
+            if (!$kurir) {
+                return [false, "Kurir tidak ditemukan", []];
             }
-            $admin->delete();
+            $kurir->delete();
             DB::commit();
-            return [true, 'Admin berhasil dihapus', []];
+            return [true, 'Kurir berhasil dihapus', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);
