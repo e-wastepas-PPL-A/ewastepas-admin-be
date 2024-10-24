@@ -23,7 +23,7 @@ class AuthUserService
         try {
             // login
 
-            $userLogin = Admin::whereEmail($email)->first();
+            $userLogin = User::whereEmail($email)->first();
 
             // if login true
             if ($userLogin) {

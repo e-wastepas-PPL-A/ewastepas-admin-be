@@ -18,6 +18,8 @@ The Ewastepas Admin API is a backend service designed to streamline the manageme
 > API Documentation Link
 
 ## Deployment
+- http://34.57.14.65:8030 (WEB)
+- http://34.57.14.65:8031 (API)
 - https://admin-api.ewastepas.com
 - https://admin.ewastepas.com
 

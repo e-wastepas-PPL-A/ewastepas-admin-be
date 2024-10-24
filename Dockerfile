@@ -40,9 +40,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy existing application directory contents
 
+RUN composer install --ignore-platform-reqs
+
 COPY . /var/www
 
-RUN composer install --ignore-platform-reqs
 
 USER root
 
