@@ -1,5 +1,5 @@
-FROM php:8.3-fpm
-LABEL author="Alfarozy"
+FROM phpswoole/swoole:5.1.3-php8.3
+LABEL author="Alfarozy.id"
 # Copy composer.lock and composer.json to /var/www
 COPY composer.lock composer.json /var/www/
 
@@ -10,53 +10,42 @@ WORKDIR /var/www
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
+    libicu-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     locales \
     zip \
     jpegoptim optipng pngquant gifsicle \
     vim \
-    cron \
+    # cron \
     unzip \
     git \
     nano \
-    supervisor
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    # supervisor \
+    libpq-dev \
+    librsvg2-bin \
+    --no-install-recommends \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql bcmath gd
+RUN docker-php-ext-install bcmath gd pdo_pgsql pcntl intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Add user for Laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+## Configuring CRON JOB
+# RUN crontab -l | { cat; echo "* * * * * /usr/local/bin/php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1"; } | crontab - \
+#     && touch /var/log/cron.log
 
 # Copy existing application directory contents
+
 COPY . /var/www
 
-# Supervisor configuration files
-# COPY email-supervisor.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Running Supervisor
-# RUN echo "[include]" >>  /etc/supervisor/supervisord.conf &&\
-#     echo "files = /etc/supervisor/conf.d/*.conf" >>  /etc/supervisor/supervisord.conf
-
 RUN composer install --ignore-platform-reqs
-# Running Supervisor
-RUN crontab -l | { cat; echo "* * * * * cd /var/www && php artisan schedule:run >> /var/log/cron.log 2>&1"; } | crontab -
 
-# Copy existing application directory permissions
-COPY --chown=www:www . /var/www
+USER root
 
-# Change current user to www
-USER www
+EXPOSE 8000
 
-EXPOSE 9000
-
-# Start php-fpm 
-CMD ["php-fpm"]
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"]

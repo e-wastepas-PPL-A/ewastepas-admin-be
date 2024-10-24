@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Jobs\SendEmailActivationMemberRegister;
 use App\Mail\EmailActivationMemberRegister;
+use App\Models\Admin;
 use App\Models\MemberOtp;
 use App\Models\User;
 use Carbon\Carbon;
@@ -22,42 +23,25 @@ class AuthUserService
         try {
             // login
 
-            $userLogin = User::whereEmail($email)->first();
+            $userLogin = Admin::whereEmail($email)->first();
 
             // if login true
             if ($userLogin) {
-                // if ($userLogin->status == User::STATUS_DELETED) {
-                //     return $this->responseJson->responseTokenInvalid('Akun team belum aktif atau sudah dihapus');
-                // }
-                if ($userLogin->google_id && !$userLogin->password) {
-                    return [false, 'Silahkan lanjutkan dengan akun google', []];
-                }
-                if ($userLogin->status == User::STATUS_VERIFIED) {
+                //> check password
+                if (Hash::check($password, $userLogin->password)) {
 
-
-                    //> check password
-                    if (Hash::check($password, $userLogin->password)) {
-
-                        // delete personal acess token by id
-                        if (env('APP_ENV') != 'local') {
-                            $this->deleteTokenSanctum($userLogin->id);
-                        }
-
-                        $tokenAirlock = $userLogin->createToken('member', ['accessLoginMember']);
-
-                        $response = [
-                            'token' => $tokenAirlock->plainTextToken,
-                            'is_active' => true
-                        ];
-                        return [true, 'Login berhasil', $response];
+                    // delete personal acess token by id
+                    if (env('APP_ENV') != 'local') {
+                        $this->deleteTokenSanctum($userLogin->id);
                     }
-                } else {
-                    $this->resendOtpToEmail($userLogin->email);
+
+                    $tokenAirlock = $userLogin->createToken('member', ['accessLoginMember']);
+
                     $response = [
-                        'token' => null,
-                        'is_active' => false
+                        'token' => $tokenAirlock->plainTextToken,
+                        'is_active' => true
                     ];
-                    return [true, 'Silahkan konfirmasi OTP untuk melanjutkan', $response];
+                    return [true, 'Login berhasil', $response];
                 }
             }
             return [false, 'Email atau Password Tidak Sesuai', []];
