@@ -61,7 +61,7 @@ class JenisSampahController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new JenisSampahService())->deleteDelete($id);
+        [$proceed, $message, $data] = (new JenisSampahService())->deleteJenisSampah($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }

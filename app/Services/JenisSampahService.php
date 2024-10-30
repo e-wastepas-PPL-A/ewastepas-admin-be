@@ -6,9 +6,11 @@ use App\Helpers\CurrencyHelper;
 use App\Helpers\LinkHelper;
 use App\Helpers\LinkyiStorage;
 use App\Models\JenisSampah;
+use App\Models\Sampah;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class JenisSampahService
 {
@@ -24,7 +26,7 @@ class JenisSampahService
 
             $data = tap(
                 JenisSampah::when($search, function ($query) use ($search) {
-                    return $query->where("jenis_sampah", 'LIKE', "%$search%");
+                    return $query->where("Nama_JenisSampah", 'LIKE', "%$search%");
                 })->when($sort, function ($query) use ($sort) {
                     return $query->orderBy('created_at', $sort);
                 })->paginate($limit),
@@ -35,7 +37,7 @@ class JenisSampahService
 
                             return [
                                 'id_jenis' => $item->id_jenis,
-                                'jenis_sampah' => $item->jenis_sampah,
+                                'Nama_JenisSampah' => $item->Nama_JenisSampah,
                             ];
                         });
                 }
@@ -60,8 +62,8 @@ class JenisSampahService
         try {
             DB::beginTransaction();
             JenisSampah::create([
-                // 'id' => LinkHelper::generateId(),
-                'jenis_sampah' => $data['jenis_sampah'],
+                'id_jenis' => Str::uuid(),
+                'Nama_JenisSampah' => $data['Nama_JenisSampah'],
                 'created_at' => now(),
             ]);
             DB::commit();
@@ -83,7 +85,8 @@ class JenisSampahService
             }
 
             $payload = [
-                'jenis_sampah' => $data['jenis_sampah'],
+                'Nama_JenisSampah' => $data['Nama_JenisSampah'],
+                'updated_at' => now(),
             ];
 
             //> create produk
@@ -106,7 +109,8 @@ class JenisSampahService
         }
 
         $response = [
-            'jenis_sampah' => $sampah
+            'id_jenis' => $sampah->id_jenis,
+            'Nama_JenisSampah' => $sampah->Nama_JenisSampah,
         ];
         return [true, "Detail Jenis Sampah", $response];
     }
@@ -115,8 +119,14 @@ class JenisSampahService
     {
         try {
             DB::beginTransaction();
-            $sampah = JenisSampah::where(['id_jenis' => $id])->first();
-            if (!$sampah) {
+            $sampah = Sampah::where(['id_jenis' => $id])->first();
+
+            if ($sampah) {
+                Sampah::where(['id_jenis' => $id])->update(['id_jenis' => null]);
+            }
+
+            $jenisSampah = JenisSampah::where(['id_jenis' => $id])->first();
+            if (!$jenisSampah) {
                 return [false, "Jenis Sampah tidak ditemukan", []];
             }
             JenisSampah::where(['id_jenis' => $id])->delete();
