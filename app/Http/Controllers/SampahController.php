@@ -61,7 +61,7 @@ class SampahController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new SampahService())->deleteDelete($id);
+        [$proceed, $message, $data] = (new SampahService())->deleteSampah($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }

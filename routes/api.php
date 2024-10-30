@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KurirController;
+use App\Http\Controllers\SampahController;
+use App\Http\Controllers\JenisSampahController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DropboxController;
@@ -59,6 +61,24 @@ Route::prefix('kurir')->group(function () {
     Route::post('/update/{id}', [KurirController::class, 'update']);
     Route::post('/update-status/{id}', [KurirController::class, 'updateStatus']);
     Route::delete('/delete/{id}', [KurirController::class, 'delete']);
+});
+
+Route::prefix('sampah')->group(function () {
+    Route::get('', [SampahController::class, 'index']);
+    Route::get('/{id}', [SampahController::class, 'show']);
+    Route::post('/create', [SampahController::class, 'create']);
+    Route::post('/update/{id}', [SampahController::class, 'update']);
+    Route::post('/update-status/{id}', [SampahController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [SampahController::class, 'delete']);
+});
+
+Route::prefix('jenis_sampah')->group(function () {
+    Route::get('', [JenisSampahController::class, 'index']);
+    Route::get('/{id}', [JenisSampahController::class, 'show']);
+    Route::post('/create', [JenisSampahController::class, 'create']);
+    Route::post('/update/{id}', [JenisSampahController::class, 'update']);
+    Route::post('/update-status/{id}', [JenisSampahController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [JenisSampahController::class, 'delete']);
 });
 
 Route::prefix('dropbox')->group(function () {

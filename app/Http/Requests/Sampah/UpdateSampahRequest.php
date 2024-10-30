@@ -25,26 +25,21 @@ class UpdateSampahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Nama_Sampah' => 'required|max:100',
-            'Berat_Sampah' => 'required|numeric',
-            'Point' => 'required|numeric',
-            'id_jenis' => 'required|numeric',
-            'id_penjemputan' => 'required|numeric',
+            'Nama_Sampah' => 'sometimes|max:100',
+            'Berat_Sampah' => 'sometimes|numeric',
+            'Point' => 'sometimes|numeric',
+            'id_jenis' => 'sometimes|numeric',
+            'id_penjemputan' => 'sometimes|numeric',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'Nama_Sampah.required' => 'Nama Sampah perlu diisi.',
             'Nama_Sampah.max' => 'Nama Sampah tidak boleh lebih dari 100 karakter.',
-            'Berat_Sampah.required' => 'Berat Sampah perlu diisi.',
             'Berat_Sampah.numeric' => 'Berat Sampah harus berupa angka.',
-            'Point.required' => 'Point perlu diisi.',
             'Point.numeric' => 'Point harus berupa angka.',
-            'id_jenis.required' => 'Jenis Sampah perlu diisi.',
             'id_jenis.numeric' => 'Jenis Sampah harus berupa angka.',
-            'id_penjemputan.required' => 'Penjemputan Sampah perlu diisi.',
             'id_penjemputan.numeric' => 'Penjemputan Sampah harus berupa angka.',
         ];
     }

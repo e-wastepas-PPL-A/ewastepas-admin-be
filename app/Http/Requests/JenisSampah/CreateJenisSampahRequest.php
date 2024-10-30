@@ -25,15 +25,15 @@ class CreateJenisSampahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_sampah' => 'required|max:100',
+            'Nama_JenisSampah' => 'required|max:100',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'jenis_sampah.required' => 'Jenis Sampah perlu diisi.',
-            'jenis_sampah.max' => 'Jenis Sampah tidak boleh lebih dari 100 karakter.',
+            'Nama_JenisSampah.required' => 'Jenis Sampah perlu diisi.',
+            'Nama_JenisSampah.max' => 'Jenis Sampah tidak boleh lebih dari 100 karakter.',
         ];
     }
 

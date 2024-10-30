@@ -28,8 +28,8 @@ class CreateSampahRequest extends FormRequest
             'Nama_Sampah' => 'required|max:100',
             'Berat_Sampah' => 'required|numeric',
             'Point' => 'required|numeric',
-            'id_jenis' => 'required|numeric',
-            'id_penjemputan' => 'required|numeric',
+            // 'id_jenis' => 'required|numeric',
+            // 'id_penjemputan' => 'required|numeric',
         ];
     }
 
@@ -42,10 +42,10 @@ class CreateSampahRequest extends FormRequest
             'Berat_Sampah.numeric' => 'Berat Sampah harus berupa angka.',
             'Point.required' => 'Point perlu diisi.',
             'Point.numeric' => 'Point harus berupa angka.',
-            'id_jenis.required' => 'Jenis Sampah perlu diisi.',
-            'id_jenis.numeric' => 'Jenis Sampah harus berupa angka.',
-            'id_penjemputan.required' => 'Penjemputan Sampah perlu diisi.',
-            'id_penjemputan.numeric' => 'Penjemputan Sampah harus berupa angka.',
+            // 'id_jenis.required' => 'Jenis Sampah perlu diisi.',
+            // 'id_jenis.numeric' => 'Jenis Sampah harus berupa angka.',
+            // 'id_penjemputan.required' => 'Penjemputan Sampah perlu diisi.',
+            // 'id_penjemputan.numeric' => 'Penjemputan Sampah harus berupa angka.',
         ];
     }
 
