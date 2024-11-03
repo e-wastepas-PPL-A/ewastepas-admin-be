@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Kurir;
+namespace App\Http\Requests\Courier;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateKurirRequest extends FormRequest
+class UpdateStatusCourierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,21 +25,14 @@ class UpdateKurirRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|max:40', // Ganti 'title' dengan 'name' jika sesuai
-            'email' => 'sometimes|email|max:100', // Tambahkan atau ubah sesuai dengan kebutuhan admin
-            'password' => 'sometimes|nullable|min:6', // Menambahkan validasi untuk password jika perlu
-            // Tambahkan aturan lain jika diperlukan
+            'is_active' => 'required|boolean',
         ];
     }
-
     public function messages(): array
     {
         return [
-            // 'name.required' => 'Nama perlu diisi.',
-            'name.max' => 'Nama tidak boleh lebih dari 40 karakter.',
-            'email.email' => 'Format email tidak valid.',
-            'email.max' => 'Email tidak boleh lebih dari 100 karakter.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'is_active.required' => 'Status is required',
+            'is_active.boolean' => 'Status must be boolean'
         ];
     }
 
