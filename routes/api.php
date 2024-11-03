@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\KurirController;
+use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CourierController;
 use App\Http\Controllers\SampahController;
 use App\Http\Controllers\JenisSampahController;
 use App\Http\Controllers\AuthController;
@@ -45,22 +45,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 
-Route::prefix('admins')->group(function () {
-    Route::get('', [AdminController::class, 'index']);
-    Route::get('/{id}', [AdminController::class, 'show']);
-    Route::post('/create', [AdminController::class, 'create']);
-    Route::post('/update/{id}', [AdminController::class, 'update']);
-    Route::post('/update-status/{id}', [AdminController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [AdminController::class, 'delete']);
+// Route::post('community/send-otp', [CommunityController::class, 'sendOtp']);
+// Route::post('community/verify-otp', [CommunityController::class, 'verifyOtp']);
+
+Route::prefix('community')->group(function () {
+    Route::get('', [CommunityController::class, 'index']);
+    Route::get('/{id}', [CommunityController::class, 'show']);
+    Route::post('/create', [CommunityController::class, 'create']);
+    Route::post('/update/{id}', [CommunityController::class, 'update']);
+    Route::post('/update-status/{id}', [CommunityController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [CommunityController::class, 'delete']);
 });
 
 Route::prefix('kurir')->group(function () {
-    Route::get('', [KurirController::class, 'index']);
-    Route::get('/{id}', [KurirController::class, 'show']);
-    Route::post('/create', [KurirController::class, 'create']);
-    Route::post('/update/{id}', [KurirController::class, 'update']);
-    Route::post('/update-status/{id}', [KurirController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [KurirController::class, 'delete']);
+    Route::get('', [CourierController::class, 'index']);
+    Route::get('/{id}', [CourierController::class, 'show']);
+    Route::post('/create', [CourierController::class, 'create']);
+    Route::post('/update/{id}', [CourierController::class, 'update']);
+    Route::post('/update-status/{id}', [CourierController::class, 'updateStatus']);
+    Route::delete('/delete/{id}', [CourierController::class, 'delete']);
 });
 
 Route::prefix('sampah')->group(function () {

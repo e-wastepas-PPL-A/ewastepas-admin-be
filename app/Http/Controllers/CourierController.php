@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
-use App\Http\Requests\Kurir\CreateKurirRequest;
-use App\Http\Requests\Kurir\UpdateKurirRequest;
-use App\Http\Requests\Kurir\UpdateStatusKurirRequest;
-use App\Services\KurirService;
+use App\Http\Requests\Courier\CreateCourierRequest;
+use App\Http\Requests\Courier\UpdateCourierRequest;
+use App\Http\Requests\Courier\UpdateStatusCourierRequest;
+use App\Services\CourierService;
 
-class KurirController extends Controller
+class CourierController extends Controller
 {
     public function index()
     {
@@ -22,7 +22,7 @@ class KurirController extends Controller
             $filter = null;
         }
 
-        [$proceed, $message, $data] = (new KurirService())->listKurir($limit, $search, $filter);
+        [$proceed, $message, $data] = (new CourierService())->listCourier($limit, $search, $filter);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -30,9 +30,9 @@ class KurirController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function create(CreateKurirRequest $request)
+    public function create(CreateCourierRequest $request)
     {
-        [$proceed, $message, $data] = (new KurirService())->createKurir($request->all());
+        [$proceed, $message, $data] = (new CourierService())->createCourier($request->all());
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -40,9 +40,9 @@ class KurirController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function update(UpdateKurirRequest $request, $id)
+    public function update(UpdateCourierRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new KurirService())->updateKurir($request->all(), $id);
+        [$proceed, $message, $data] = (new CourierService())->updateCourier($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -50,9 +50,9 @@ class KurirController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function updateStatus(UpdateStatusKurirRequest $request, $id)
+    public function updateStatus(UpdateStatusCourierRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new KurirService())->updateStatusKurir($request->all(), $id);
+        [$proceed, $message, $data] = (new CourierService())->updateStatusCourier($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -62,7 +62,7 @@ class KurirController extends Controller
 
     public function show($id)
     {
-        [$proceed, $message, $data] = (new KurirService())->detailKurir($id);
+        [$proceed, $message, $data] = (new CourierService())->detailCourier($id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -72,7 +72,7 @@ class KurirController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new KurirService())->deleteKurir($id);
+        [$proceed, $message, $data] = (new CourierService())->deleteCourier($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }

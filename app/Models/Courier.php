@@ -2,40 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class Courier extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasUuids;
-
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $table = 'users';
-    protected $primaryKey = 'id_user';
+    protected $table = 'courier';
+    protected $primaryKey = 'courier_id';
 
     protected $fillable = [
-        'id_user', 'Nama', 'Email', 'No_Telp', 'Tgl_Lahir', 'Alamat', 'NIK', 
-        'No_Rek', 'KTP_URL', 'KK_URL', 'Foto', 'Total_Point', 
-        'Berat_Sampah', 'Roles'
+        'name', 'email', 'password', 'phone', 'date_of_birth',
+        'address', 'account_number', 'nik', 'ktp_url', 'kk_url', 
+        'photo', 'is_verified', 'is_active',
+        'otp_code', 'otp_expiry', 'created_at', 'updated_at'
     ];
-    
-     // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'password',
-    //     'google_id',
-    //     'status',
-    //     'email_verified_at'
-    // ];
 
     // const STATUS_VERIFIED = 'verified';
     // const STATUS_UNVERIFIED = 'unverified';
@@ -63,22 +53,13 @@ class User extends Authenticatable
     //     ];
     // }
 
-    public function dropboxes(): HasMany
+    public function courierPoints(): HasOne
     {
-        return $this->hasMany(Dropbox::class, 'id_user', 'id_user');
+        return $this->hasOne(CourierPoints::class, 'courier_id', 'courier_id');
     }
 
-    public function penjemputanSampah(): HasMany
+    public function pickupWastes(): HasMany
     {
-        return $this->hasMany(PenjemputanSampah::class, 'id_user', 'id_user');
+        return $this->hasMany(PickupWaste::class, 'courier_id', 'courier_id');
     }
-
-    // public function store(): HasOne
-    // {
-    //     return $this->hasOne(Store::class, 'user_id', 'id');
-    // }
-    // public function storeStatus()
-    // {
-    //     return $this?->store != null;
-    // }
 }
