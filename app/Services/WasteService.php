@@ -25,7 +25,7 @@ class WasteService
             }
 
             $data = tap(
-                Waste::with('waste_type') // Mengambil data relasi WasteType
+                Waste::with('wasteType') // Mengambil data relasi WasteType
                     ->when($search, function ($query) use ($search) {
                         return $query->where("waste_name", 'LIKE', "%$search%");
                     })
@@ -72,15 +72,19 @@ class WasteService
         try {
             DB::beginTransaction();
             // get uuid Type Waste by Nama_WasteType
-            $WasteType = WasteType::where('waste_type_name', $data['waste_type_name'])->first();
+            // $WasteType = WasteType::where('waste_type_name', $data['waste_type_name'])->first();
+
+            // if (!$WasteType) {
+            //     return [false, 'Waste Type tidak ditemukan', []];
+            // }
 
             Waste::create([
                 'waste_name' => $data['waste_name'],
                 'point' => $data['point'],
                 'image' => $data['image'],
                 'description' => $data['description'],
-                'waste_type_id' => $WasteType->waste_type_id,
-                'pickup_id' => $data['pickup_id'],
+                'waste_type_id' => $data['waste_type_id'],
+                'pickup_id' => $data['pickup_id'] ?? null,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
@@ -117,7 +121,7 @@ class WasteService
                 'image' => $data['image'] ?? $Waste->image,
                 'description' => $data['description'] ?? $Waste->description,
                 'waste_type_id' => $waste_type_id,
-                'pickup_id' => $data['pickup_id'] ?? $Waste->pickup_id,
+                // 'pickup_id' => $data['pickup_id'] ?? $Waste->pickup_id,
                 'updated_at' => now()
             ];
 

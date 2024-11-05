@@ -65,7 +65,7 @@ class WasteTypeService
             DB::beginTransaction();
             WasteType::create([
                 'waste_type_name' => $data['waste_type_name'],
-                'image' => $data['image'],
+                'image' => $data['image'] ?? null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

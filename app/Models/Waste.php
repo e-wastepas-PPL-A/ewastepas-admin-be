@@ -17,12 +17,12 @@ class Waste extends Model
         'waste_name', 'point', 'waste_type_id', 'image', 'description', 'created_at', 'updated_at'
     ];
 
-    public function wasteTypes()
+    public function wasteType()
     {
         return $this->belongsTo(WasteType::class, 'waste_type_id', 'waste_type_id');
     }
 
-    public function pickupWastes()
+    public function pickupWaste()
     {
         return $this->belongsTo(PickupWaste::class, 'pickup_id', 'pickup_id');
     }
