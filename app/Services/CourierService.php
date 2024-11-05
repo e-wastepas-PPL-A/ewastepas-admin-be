@@ -182,8 +182,13 @@ class CourierService
                 return [false, 'Courier sudah aktif', []];
             } 
             
+            // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
+            if (!in_array($data['active'], ['Approve', 'Reject', 'Pending'])) {
+                return [false, 'Status tidak valid', []];
+            }
+
             $Courier->update([
-                'is_active' => $data['is_active'],
+                'active' => $data['active'],
                 'updated_at' => now()
             ]);
             
