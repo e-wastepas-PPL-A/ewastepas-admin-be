@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CourierController;
-use App\Http\Controllers\SampahController;
-use App\Http\Controllers\JenisSampahController;
+use App\Http\Controllers\WasteController;
+use App\Http\Controllers\WasteTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DropboxController;
@@ -57,7 +57,7 @@ Route::prefix('community')->group(function () {
     Route::delete('/delete/{id}', [CommunityController::class, 'delete']);
 });
 
-Route::prefix('kurir')->group(function () {
+Route::prefix('courier')->group(function () {
     Route::get('', [CourierController::class, 'index']);
     Route::get('/{id}', [CourierController::class, 'show']);
     Route::post('/create', [CourierController::class, 'create']);
@@ -66,22 +66,20 @@ Route::prefix('kurir')->group(function () {
     Route::delete('/delete/{id}', [CourierController::class, 'delete']);
 });
 
-Route::prefix('sampah')->group(function () {
-    Route::get('', [SampahController::class, 'index']);
-    Route::get('/{id}', [SampahController::class, 'show']);
-    Route::post('/create', [SampahController::class, 'create']);
-    Route::post('/update/{id}', [SampahController::class, 'update']);
-    Route::post('/update-status/{id}', [SampahController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [SampahController::class, 'delete']);
+Route::prefix('waste')->group(function () {
+    Route::get('', [WasteController::class, 'index']);
+    Route::get('/{id}', [WasteController::class, 'show']);
+    Route::post('/create', [WasteController::class, 'create']);
+    Route::post('/update/{id}', [WasteController::class, 'update']);
+    Route::delete('/delete/{id}', [WasteController::class, 'delete']);
 });
 
-Route::prefix('jenis_sampah')->group(function () {
-    Route::get('', [JenisSampahController::class, 'index']);
-    Route::get('/{id}', [JenisSampahController::class, 'show']);
-    Route::post('/create', [JenisSampahController::class, 'create']);
-    Route::post('/update/{id}', [JenisSampahController::class, 'update']);
-    Route::post('/update-status/{id}', [JenisSampahController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [JenisSampahController::class, 'delete']);
+Route::prefix('waste_type')->group(function () {
+    Route::get('', [WasteTypeController::class, 'index']);
+    Route::get('/{id}', [WasteTypeController::class, 'show']);
+    Route::post('/create', [WasteTypeController::class, 'create']);
+    Route::post('/update/{id}', [WasteTypeController::class, 'update']);
+    Route::delete('/delete/{id}', [WasteTypeController::class, 'delete']);
 });
 
 Route::prefix('dropbox')->group(function () {

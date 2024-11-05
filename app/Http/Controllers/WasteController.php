@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
-use App\Http\Requests\JenisSampah\CreateJenisSampahRequest;
-use App\Http\Requests\JenisSampah\UpdateJenisSampahRequest;
-use App\Services\JenisSampahService;
+use App\Http\Requests\Waste\CreateWasteRequest;
+use App\Http\Requests\Waste\UpdateWasteRequest;
+use App\Services\WasteService;
 
-class JenisSampahController extends Controller
+class WasteController extends Controller
 {
     public function index()
     {
@@ -21,7 +21,7 @@ class JenisSampahController extends Controller
             $filter = null;
         }
 
-        [$proceed, $message, $data] = (new JenisSampahService())->listJenisSampah($limit, $search, $filter);
+        [$proceed, $message, $data] = (new WasteService())->listWaste($limit, $search, $filter);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -29,9 +29,9 @@ class JenisSampahController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function create(CreateJenisSampahRequest $request)
+    public function create(CreateWasteRequest $request)
     {
-        [$proceed, $message, $data] = (new JenisSampahService())->createJenisSampah($request->all());
+        [$proceed, $message, $data] = (new WasteService())->createWaste($request->all());
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -39,9 +39,9 @@ class JenisSampahController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function update(UpdateJenisSampahRequest $request, $id)
+    public function update(UpdateWasteRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new JenisSampahService())->updateJenisSampah($request->all(), $id);
+        [$proceed, $message, $data] = (new WasteService())->updateWaste($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -51,7 +51,7 @@ class JenisSampahController extends Controller
 
     public function show($id)
     {
-        [$proceed, $message, $data] = (new JenisSampahService())->detailJenisSampah($id);
+        [$proceed, $message, $data] = (new WasteService())->detailWaste($id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -61,7 +61,7 @@ class JenisSampahController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new JenisSampahService())->deleteJenisSampah($id);
+        [$proceed, $message, $data] = (new WasteService())->deleteWaste($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
