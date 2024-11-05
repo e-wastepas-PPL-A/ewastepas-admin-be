@@ -27,7 +27,7 @@ class CreateWasteRequest extends FormRequest
         return [
             'waste_name' => 'required|max:100',
             'point' => 'required|numeric',
-            'image' => 'required',
+            'image' => 'nullable',
             'description' => 'required|max:255',
             'waste_type_id' => 'required|numeric',
             // 'pickup_id' => 'required|numeric',
