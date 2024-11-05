@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Sampah;
+namespace App\Http\Requests\WasteType;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateSampahRequest extends FormRequest
+class CreateWasteTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,22 +25,17 @@ class UpdateSampahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Nama_Sampah' => 'sometimes|max:100',
-            'Berat_Sampah' => 'sometimes|numeric',
-            'Point' => 'sometimes|numeric',
-            'id_jenis' => 'sometimes|numeric',
-            'id_penjemputan' => 'sometimes|numeric',
+            'waste_type_name' => 'required|max:100',
+            'image' => 'nullable',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'Nama_Sampah.max' => 'Nama Sampah tidak boleh lebih dari 100 karakter.',
-            'Berat_Sampah.numeric' => 'Berat Sampah harus berupa angka.',
-            'Point.numeric' => 'Point harus berupa angka.',
-            'id_jenis.numeric' => 'Jenis Sampah harus berupa angka.',
-            'id_penjemputan.numeric' => 'Penjemputan Sampah harus berupa angka.',
+            'waste_type_name.required' => 'Waste type name is required',
+            'waste_type_name.max' => 'Waste type name max 100 characters',
+            'image.required' => 'Image is required',
         ];
     }
 

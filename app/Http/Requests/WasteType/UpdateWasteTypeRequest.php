@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\JenisSampah;
+namespace App\Http\Requests\WasteType;
 
 use App\Helpers\ResponseJson;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateJenisSampahRequest extends FormRequest
+class UpdateWasteTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +25,15 @@ class UpdateJenisSampahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Nama_JenisSampah' => 'sometimes|max:100',
+            'waste_type_name' => 'max:100',
+            'image' => 'nullable',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'Nama_JenisSampah.max' => 'Jenis Sampah tidak boleh lebih dari 100 karakter.',
+            'waste_type_name.max' => 'Waste type name max 100 characters',
         ];
     }
 

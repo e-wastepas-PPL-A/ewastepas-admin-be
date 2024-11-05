@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
-use App\Http\Requests\Sampah\CreateSampahRequest;
-use App\Http\Requests\Sampah\UpdateSampahRequest;
-use App\Services\SampahService;
+use App\Http\Requests\WasteType\CreateWasteTypeRequest;
+use App\Http\Requests\WasteType\UpdateWasteTypeRequest;
+use App\Services\WasteTypeService;
 
-class SampahController extends Controller
+class WasteTypeController extends Controller
 {
     public function index()
     {
@@ -21,7 +21,7 @@ class SampahController extends Controller
             $filter = null;
         }
 
-        [$proceed, $message, $data] = (new SampahService())->listSampah($limit, $search, $filter);
+        [$proceed, $message, $data] = (new WasteTypeService())->listWasteType($limit, $search, $filter);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -29,9 +29,9 @@ class SampahController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function create(CreateSampahRequest $request)
+    public function create(CreateWasteTypeRequest $request)
     {
-        [$proceed, $message, $data] = (new SampahService())->createSampah($request->all());
+        [$proceed, $message, $data] = (new WasteTypeService())->createWasteType($request->all());
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -39,9 +39,9 @@ class SampahController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function update(UpdateSampahRequest $request, $id)
+    public function update(UpdateWasteTypeRequest $request, $id)
     {
-        [$proceed, $message, $data] = (new SampahService())->updateSampah($request->all(), $id);
+        [$proceed, $message, $data] = (new WasteTypeService())->updateWasteType($request->all(), $id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -51,7 +51,7 @@ class SampahController extends Controller
 
     public function show($id)
     {
-        [$proceed, $message, $data] = (new SampahService())->detailSampah($id);
+        [$proceed, $message, $data] = (new WasteTypeService())->detailWasteType($id);
 
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -61,7 +61,7 @@ class SampahController extends Controller
 
     public function delete($id)
     {
-        [$proceed, $message, $data] = (new SampahService())->deleteSampah($id);
+        [$proceed, $message, $data] = (new WasteTypeService())->deleteWasteType($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
