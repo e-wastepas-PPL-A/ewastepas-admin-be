@@ -7,43 +7,29 @@ use App\Http\Controllers\WasteTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DropboxController;
+use App\Http\Controllers\PickupControler;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
+// Route::middleware(['auth:sanctum'])->group(function () {
+// Route::group(function () {
 
-    Route::prefix('dashboard')->group(function () {
-        Route::get('/', [DashboardController::class, 'index']);
-
-        //> product category
-        Route::prefix('product/category')->group(function () {
-            Route::get('/', [ProductCategoryController::class, 'index']);
-            Route::post('create', [ProductCategoryController::class, 'create']);
-            Route::post('update/{id}', [ProductCategoryController::class, 'update']);
-            Route::delete('delete/{id}', [ProductCategoryController::class, 'delete']);
-            Route::get('{id}', [ProductCategoryController::class, 'show']);
-        });
-
-        //> product
-        Route::prefix('products')->group(function () {
-            Route::get('/', [ProductController::class, 'index']);
-            Route::post('/create', [ProductController::class, 'create']);
-            Route::post('/update/{id}', [ProductController::class, 'update']);
-            Route::delete('/delete/{id}', [ProductController::class, 'delete']);
-            Route::post('/update-status/{id}', [ProductController::class, 'updateStatus']);
-            Route::get('/{id}', [ProductController::class, 'show']);
-        });
-    });
-
-    //> profile
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'profile']);
-        Route::post('/update-password', [ProfileController::class, 'updatePassword']);
-    });
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
+    Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
+    Route::get('/pickup/{id}', [PickupControler::class, 'detailPickupUser']);
 });
+
+//> profile
+Route::prefix('profile')->group(function () {
+    Route::get('/', [ProfileController::class, 'profile']);
+    Route::post('/update-password', [ProfileController::class, 'updatePassword']);
+});
+// });
 
 // Route::post('community/send-otp', [CommunityController::class, 'sendOtp']);
 // Route::post('community/verify-otp', [CommunityController::class, 'verifyOtp']);
@@ -94,7 +80,7 @@ Route::prefix('auth')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ability:accessLoginMember']);
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ability:accessLoginAdmin']);
 });
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);

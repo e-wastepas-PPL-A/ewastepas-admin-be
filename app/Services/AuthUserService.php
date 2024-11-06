@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\SendEmailActivationMemberRegister;
 use App\Mail\EmailActivationMemberRegister;
 use App\Models\Admin;
+use App\Models\Management;
 use App\Models\MemberOtp;
 use App\Models\User;
 use Carbon\Carbon;
@@ -23,7 +24,7 @@ class AuthUserService
         try {
             // login
 
-            $userLogin = User::whereEmail($email)->first();
+            $userLogin = Management::whereEmail($email)->where('is_admin', 1)->first();
 
             // if login true
             if ($userLogin) {
@@ -35,7 +36,7 @@ class AuthUserService
                         $this->deleteTokenSanctum($userLogin->id);
                     }
 
-                    $tokenAirlock = $userLogin->createToken('member', ['accessLoginMember']);
+                    $tokenAirlock = $userLogin->createToken('member', ['accessLoginAdmin']);
 
                     $response = [
                         'token' => $tokenAirlock->plainTextToken,
@@ -51,110 +52,6 @@ class AuthUserService
         }
     }
 
-    public function googleCallback($google_user)
-    {
-        try {
-
-            $user = User::where(['google_id' => $google_user->getId(), 'email' => $google_user->getEmail()])->first();
-
-            if (!$user) {
-                $user = User::create([
-                    'name' => $google_user->getName(),
-                    'email' => $google_user->getEmail(),
-                    'google_id' => $google_user->getId()
-                ]);
-            }
-            if (env('APP_ENV') != 'local') {
-                $this->deleteTokenSanctum($user->id);
-            }
-
-            $tokenAirlock = $user->createToken('member', ['accessLoginMember']);
-
-            $response = [
-                'token' => $tokenAirlock->plainTextToken,
-                'is_active' => true
-
-            ];
-            return [true, 'Login berhasil', $response];
-        } catch (\Throwable $e) {
-            Log::info('===Login Google===');
-            Log::error($e);
-            return [false, 'Gagal Login dengan akun google', []];
-        }
-    }
-    public function register($name, $email, $password): array
-    {
-        try {
-            $user = new User;
-            $user->name = $name;
-            $user->email = $email;
-            $user->password = Hash::make($password);
-            $user->save();
-            //> Send OTP activation
-            $sendOTP = $this->sendOTPCodeToEmail($email, MemberOtp::TYPE_ACTIVATION);
-            if (!$sendOTP) {
-                return [false, 'Otp gagal dikirim', []];
-            }
-            return [true, 'Pendaftaran berhasil, Silahkan konfirmasi OTP anda untuk melanjutkan', []];
-        } catch (\Throwable $exception) {
-            Log::error($exception);
-            return [false, 'Server is busy right now', []];
-        }
-    }
-    public function checkEmailAvailable($email): array
-    {
-        try {
-            $user = User::whereEmail($email)->first();
-
-            $status = null;
-            if (!$user) {
-                $status = true;
-            } else {
-                if ($user->status == User::STATUS_UNVERIFIED) {
-                    $status = false;
-                }
-            }
-
-            $response = [
-                'email' => $email,
-                'status' => $status
-            ];
-            return [true, 'Check ketersediaan email', $response];
-        } catch (\Throwable $exception) {
-            Log::error($exception);
-            return [false, 'Server is busy right now', []];
-        }
-    }
-
-    public function otpConfirmation($code, $email)
-    {
-        $user = User::where('email', $email)->first();
-        if (!$user) {
-            return [false, 'Kode OTP tidak valid', []];
-        }
-        $otp = MemberOtp::where(['email' => $email, 'code' => $code])->first();
-
-        if (!$otp) {
-            return [false, 'Kode OTP tidak valid', []];
-        }
-        $createdAt = Carbon::parse($otp->created_at);
-        $currentTime = Carbon::now();
-        $timeDifference = $createdAt->diffInSeconds($currentTime);
-        $otp_expiration_time = 3600; //> 1 jam
-        if ($timeDifference > $otp_expiration_time) {
-            $otp->delete();
-            return [false, 'Kode OTP tidak valid', []];
-        }
-        $otp->delete();
-        $user->update(['status' => User::STATUS_VERIFIED, 'email_verified_at' => now()]);
-        $tokenAirlock = $user->createToken('member', ['accessLoginMember']);
-
-        $response = [
-            'token' => $tokenAirlock->plainTextToken,
-
-        ];
-        return [true, 'Kode OTP Berhasil dikonfirmasi', $response];
-    }
     public function otpForgetPasswordConfirmation($code, $email)
     {
         $user = User::where('email', $email)->first();
@@ -257,7 +154,7 @@ class AuthUserService
 
     private function deleteTokenSanctum($id)
     {
-        PersonalAccessToken::where(['tokenable_id' => $id, 'abilities' => '["accessLoginMember"]'])->delete();
+        PersonalAccessToken::where(['tokenable_id' => $id, 'abilities' => '["accessLoginAdmin"]'])->delete();
     }
 
 
