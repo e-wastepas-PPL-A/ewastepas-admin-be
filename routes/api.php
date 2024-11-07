@@ -22,6 +22,8 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
     Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
     Route::get('/pickup/{id}', [PickupControler::class, 'detailPickupUser']);
+    Route::get('/waste-point', [PickupControler::class, 'wastePoint']);
+    Route::get('/waste-point/{id}', [PickupControler::class, 'detailWastePoint']);
 });
 
 //> profile

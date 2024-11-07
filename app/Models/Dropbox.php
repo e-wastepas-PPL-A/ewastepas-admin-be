@@ -8,21 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Dropbox extends Model
 {
     use HasFactory;
-    protected $table = 'dropboxes';
-    protected $primaryKey = 'id_dropbox';
+    protected $table = 'dropbox';
+    protected $primaryKey = 'dropbox_id';
 
     protected $fillable = [
-        'Alamat', 'Longitude', 'Latitude', 'id_user'
+        'name',
+        'address',
+        'latitude',
+        'longitude',
+        'capacity',
+        'status'
     ];
     public $incrementing = true;
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
-    }
-
-    public function penjemputanSampah()
-    {
-        return $this->hasMany(PenjemputanSampah::class, 'id_dropbox', 'id_dropbox');
-    }
 }

@@ -23,9 +23,18 @@ class Community extends Authenticatable
     protected $primaryKey = 'community_id';
 
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'date_of_birth',
-        'address', 'photo', 'is_verified', 'otp_code', 'otp_expiry',
-        'created_at', 'updated_at'
+        'name',
+        'email',
+        'password',
+        'phone',
+        'date_of_birth',
+        'address',
+        'photo',
+        'is_verified',
+        'otp_code',
+        'otp_expiry',
+        'created_at',
+        'updated_at'
     ];
 
     // const STATUS_VERIFIED = 'verified';
@@ -53,7 +62,11 @@ class Community extends Authenticatable
     //         'password' => 'hashed',
     //     ];
     // }
-
+    protected $hidden = [
+        'otp_code',
+        'otp_expiry',
+        'password',
+    ];
     public function communityPoints(): HasOne
     {
         return $this->hasOne(CommunityPoints::class, 'community_id', 'community_id');

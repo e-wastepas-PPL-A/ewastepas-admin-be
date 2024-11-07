@@ -21,23 +21,33 @@ class Courier extends Authenticatable
     protected $primaryKey = 'courier_id';
 
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'date_of_birth',
-        'address', 'account_number', 'nik', 'ktp_url', 'kk_url', 
-        'photo', 'is_verified', 'is_active',
-        'otp_code', 'otp_expiry', 'created_at', 'updated_at'
+        'name',
+        'email',
+        'password',
+        'phone',
+        'date_of_birth',
+        'address',
+        'account_number',
+        'nik',
+        'ktp_url',
+        'kk_url',
+        'photo',
+        'is_verified',
+        'is_active',
+        'otp_code',
+        'otp_expiry',
+        'created_at',
+        'updated_at'
     ];
 
-    // const STATUS_VERIFIED = 'verified';
-    // const STATUS_UNVERIFIED = 'unverified';
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    // protected $hidden = [
-    //     'password',
-    //     'remember_token',
-    // ];
+    protected $hidden = [
+        'otp_code',
+        'otp_expiry',
+        'password',
+        'nik',
+        'ktp_url',
+        'kk_url',
+    ];
 
     public $incrementing = true;
     /**
