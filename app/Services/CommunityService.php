@@ -158,10 +158,18 @@ class CommunityService
                 return [false, 'Community tidak ditemukan', []];
             }
 
-            if ($Community->is_verified == 1) {
+            // Check if community account_number, nik, ktp_url, kk_url, photo, is_verified is empty
+            if (empty($Community->otp_code) || empty($Community->otp_expiry)) {
+                return [false, 'Community belum mendapatkan otp', []];
+            } else if ($Community->is_verified == 1) {
                 return [false, 'Community sudah diverifikasi', []];
-            } 
+            }
             
+            // Jika data['is_verified'] bukan 0 atau 1 maka return false
+            if (!in_array($data['is_verified'], [0, 1])) {
+                return [false, 'Verifikasi tidak valid', []];
+            }
+
             $Community->update([
                 'is_verified' => $data['is_verified'],
                 'updated_at' => now()
@@ -175,7 +183,7 @@ class CommunityService
             ]);
 
             DB::commit();
-            return [true, 'Community berhasil diaktifkan', []];
+            return [true, 'Community berhasil diverifikasi', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);
