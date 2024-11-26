@@ -80,7 +80,7 @@ class WasteService
 
             Waste::create([
                 'waste_name' => $data['waste_name'],
-                'point' => $data['point'],
+                'point' => 0,
                 'image' => $data['image'],
                 'description' => $data['description'],
                 'waste_type_id' => $data['waste_type_id'],
@@ -117,7 +117,7 @@ class WasteService
 
             $payload = [
                 'waste_name' => $data['waste_name'] ?? $Waste->waste_name,
-                'point' => $data['point'] ?? $Waste->point,
+                'point' => $Waste->point,
                 'image' => $data['image'] ?? $Waste->image,
                 'description' => $data['description'] ?? $Waste->description,
                 'waste_type_id' => $waste_type_id,
