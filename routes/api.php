@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\WasteController;
+use App\Http\Controllers\WasteConvertController;
 use App\Http\Controllers\WasteTypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -60,6 +61,12 @@ Route::prefix('waste')->group(function () {
     Route::post('/create', [WasteController::class, 'create']);
     Route::post('/update/{id}', [WasteController::class, 'update']);
     Route::delete('/delete/{id}', [WasteController::class, 'delete']);
+});
+
+Route::prefix('waste_convert')->group(function () {
+    Route::get('', [WasteConvertController::class, 'index']);
+    Route::get('/{id}', [WasteConvertController::class, 'show']);
+    Route::post('/update/{id}', [WasteConvertController::class, 'update']);
 });
 
 Route::prefix('waste_type')->group(function () {
