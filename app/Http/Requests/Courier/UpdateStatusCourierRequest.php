@@ -25,14 +25,13 @@ class UpdateStatusCourierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'active' => 'required|boolean',
+            'active' => 'required',
         ];
     }
     public function messages(): array
     {
         return [
-            'active.required' => 'Status is required',
-            'active.boolean' => 'Status must be boolean'
+            'active.required' => 'Status is required'
         ];
     }
 
