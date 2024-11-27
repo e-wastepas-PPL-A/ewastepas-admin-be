@@ -178,8 +178,6 @@ class CourierService
                 return [false, 'Courier belum melengkapi data', []];
             } else if ($Courier->is_verified == 0) {
                 return [false, 'Courier belum diverifikasi', []];
-            } else if ($Courier->is_active == 1) {
-                return [false, 'Courier sudah aktif', []];
             } 
             
             // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
