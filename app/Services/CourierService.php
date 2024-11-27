@@ -50,7 +50,7 @@ class CourierService
                                 'kk_url' => $item->kk_url,
                                 'photo' => $item->photo,
                                 'is_verified' => $item->is_verified,
-                                'is_active' => $item->is_active,
+                                'status' => $item->status,
                                 'otp_code' => $item->otp_code,
                                 'otp_expiry' => $item->otp_expiry,
                                 'created_at' => $item->created_at,
@@ -68,6 +68,10 @@ class CourierService
             );
 
             $data->withPath($limit);
+
+            $data = $data->filter(function ($item) {
+                return $item['status'] == 'Pending' || $item['status'] == 'Reject';
+            });
 
             $response = [
                 'Courier' => $data
@@ -136,7 +140,7 @@ class CourierService
                 'kk_url' => $data['kk_url'] ?? $Courier->kk_url,
                 'photo' => $data['photo'] ?? $Courier->photo,
                 'is_verified' => $data['is_verified'] ?? $Courier->is_verified,
-                'is_active' => $data['is_active'] ?? $Courier->is_active,
+                'status' => $Courier->status,
                 'otp_code' => $data['otp_code'] ?? $Courier->otp_code,
                 'otp_expiry' => $data['otp_expiry'] ?? $Courier->otp_expiry,
                 'updated_at' => now()
@@ -181,7 +185,7 @@ class CourierService
             } 
 
             // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
-            if (!in_array($data['status'], ['Approve', 'Reject', 'Pending'])) {
+            if (!in_array($data['status'], ['Approved', 'Reject', 'Pending'])) {
                 return [false, 'Status tidak valid', []];
             }
 
@@ -198,7 +202,7 @@ class CourierService
             ]);
 
             DB::commit();
-            return [true, 'Courier berhasil diaktifkan', []];
+            return [true, 'Courier berhasil diubah', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
             Log::error($exception);

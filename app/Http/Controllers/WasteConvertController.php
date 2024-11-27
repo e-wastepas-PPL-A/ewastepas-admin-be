@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseJson;
-use App\Http\Requests\Waste\UpdateWasteConvertRequest;
+use App\Http\Requests\WasteConvert\UpdateWasteConvertRequest;
 use App\Services\WasteConvertService;
 
 class WasteConvertController extends Controller
@@ -28,7 +28,7 @@ class WasteConvertController extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function update(UpdateWasteRequest $request, $id)
+    public function update(UpdateWasteConvertRequest $request, $id)
     {
         [$proceed, $message, $data] = (new WasteConvertService())->updateWasteConvert($request->all(), $id);
 

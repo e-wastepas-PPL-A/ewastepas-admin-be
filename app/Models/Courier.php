@@ -33,7 +33,7 @@ class Courier extends Authenticatable
         'kk_url',
         'photo',
         'is_verified',
-        'is_active',
+        'status',
         'otp_code',
         'otp_expiry',
         'created_at',

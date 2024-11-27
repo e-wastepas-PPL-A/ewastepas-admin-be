@@ -64,6 +64,10 @@ class CommunityService
 
             $data->withPath($limit);
 
+            $data = $data->filter(function ($item) {
+                return $item['is_verified'] == 0;
+            });
+
             $response = [
                 'Community' => $data
             ];
@@ -159,8 +163,8 @@ class CommunityService
             }
 
             // Check if community account_number, nik, ktp_url, kk_url, photo, is_verified is empty
-            if (empty($Community->otp_code) || empty($Community->otp_expiry)) {
-                return [false, 'Community belum mendapatkan otp', []];
+            if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address) || empty($Community->photo)) {
+                return [false, 'Community belum melengkapi data', []];
             } else if ($Community->is_verified == 1) {
                 return [false, 'Community sudah diverifikasi', []];
             }
