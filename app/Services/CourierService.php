@@ -179,14 +179,14 @@ class CourierService
             } else if ($Courier->is_verified == 0) {
                 return [false, 'Courier belum diverifikasi', []];
             } 
-            
+
             // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
-            if (!in_array($data['active'], ['Approve', 'Reject', 'Pending'])) {
+            if (!in_array($data['status'], ['Approve', 'Reject', 'Pending'])) {
                 return [false, 'Status tidak valid', []];
             }
 
             $Courier->update([
-                'active' => $data['active'],
+                'status' => $data['status'],
                 'updated_at' => now()
             ]);
             
