@@ -178,11 +178,9 @@ class CourierService
             }
 
             // Check if courier account_number, nik, ktp_url, kk_url, photo, is_verified is empty
-            if (empty($Courier->account_number) || empty($Courier->nik) || empty($Courier->ktp_url) || empty($Courier->kk_url) || empty($Courier->photo) || empty($Courier->is_verified)) {
+            if (empty($Courier->account_number) || empty($Courier->nik) || empty($Courier->ktp_url) || empty($Courier->kk_url) || empty($Courier->photo)) {
                 return [false, 'Courier belum melengkapi data', []];
-            } else if ($Courier->is_verified == 0) {
-                return [false, 'Courier belum diverifikasi', []];
-            } 
+            }
 
             // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
             if (!in_array($data['status'], ['Approved', 'Reject', 'Pending'])) {
@@ -194,12 +192,16 @@ class CourierService
                 'updated_at' => now()
             ]);
             
-            CourierPoints::create([
-                'courier_id' => $Courier->courier_id,
-                'total_points' => 0,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            if ($data['status'] == 'Approved') {
+                CourierPoints::create([
+                    'courier_id' => $Courier->courier_id,
+                    'total_points' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            } else if ($data['status'] == 'Reject') {
+                CourierPoints::where(['courier_id' => $Courier->courier_id])->delete();
+            }
 
             DB::commit();
             return [true, 'Courier berhasil diubah', []];
