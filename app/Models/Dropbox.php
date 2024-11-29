@@ -14,6 +14,7 @@ class Dropbox extends Model
     protected $fillable = [
         'name',
         'address',
+        'district_address',
         'latitude',
         'longitude',
         'capacity',

@@ -25,22 +25,37 @@ class CreateDropboxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'alamat_dropbox' => 'required|max:100',
-            'longitude' => 'required',
-            'latitude' => 'required',
-            // 'created_at' => 'required|date',
+            'name' => 'required|max:100|string',
+            'address' => 'required|max:255|string',
+            'district_address' => 'required|max:255|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'capacity' => 'required|numeric',
+            'status' => 'required|in:Avaliable,Full',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'alamat_dropbox.required' => 'Alamat Dropbox perlu diisi.',
-            'alamat_dropbox.max' => 'Alamat Dropbox maksimal 100 karakter.',
-            'longitude.required' => 'Longitude perlu diisi.',
-            'latitude.required' => 'Latitude perlu diisi.',
-            // 'created_at.required' => 'Created At perlu diisi.',
-            // 'created_at.date' => 'Created At harus dalam format tanggal yang valid.',
+            'name.required' => 'Name is required',
+            'name.string' => 'Name must be string',
+            'name.max' => 'Name is too long',
+            'address.required' => 'Address is required',
+            'address.string' => 'Address must be string',
+            'address.max' => 'Address is too long',
+            'district_address.required' => 'District Address is required',
+            'district_address.string' => 'District Address must be string',
+            'district_address.max' => 'District Address is too long',
+            'latitude.required' => 'Latitude is required',
+            'latitude.numeric' => 'Latitude must be numeric',
+            'longitude.required' => 'Longitude is required',
+            'longitude.numeric' => 'Longitude must be numeric',
+            'capacity.required' => 'Capacity is required',
+            'capacity.numeric' => 'Capacity must be numeric',
+            'status.required' => 'Status is required',
+            'status.string' => 'Status must be string',
+            'status.in' => 'Status must be Avaliable or Full',
         ];
     }
 

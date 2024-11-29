@@ -25,18 +25,37 @@ class UpdateDropboxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'LocationName' => 'required|max:100',
-            'Address' => 'required|max:100',
+            'name' => 'required|max:100|string',
+            'address' => 'required|max:255|string',
+            'district_address' => 'required|max:255|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'capacity' => 'required|numeric',
+            'status' => 'required|in:Avaliable,Full',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'LocationName.required' => 'Location Name perlu diisi.',
-            'LocationName.max' => 'Location Name tidak boleh lebih dari 100 karakter.',
-            'Address.required' => 'Address perlu diisi.',
-            'Address.max' => 'Address tidak boleh lebih dari 100 karakter.',
+            'name.required' => 'Name is required',
+            'name.string' => 'Name must be string',
+            'name.max' => 'Name is too long',
+            'address.required' => 'Address is required',
+            'address.string' => 'Address must be string',
+            'address.max' => 'Address is too long',
+            'district_address.required' => 'District Address is required',
+            'district_address.string' => 'District Address must be string',
+            'district_address.max' => 'District Address is too long',
+            'latitude.required' => 'Latitude is required',
+            'latitude.numeric' => 'Latitude must be numeric',
+            'longitude.required' => 'Longitude is required',
+            'longitude.numeric' => 'Longitude must be numeric',
+            'capacity.required' => 'Capacity is required',
+            'capacity.numeric' => 'Capacity must be numeric',
+            'status.required' => 'Status is required',
+            'status.string' => 'Status must be string',
+            'status.in' => 'Status must be Avaliable or Full',
         ];
     }
 
