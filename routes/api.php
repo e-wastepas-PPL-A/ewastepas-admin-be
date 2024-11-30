@@ -79,9 +79,11 @@ Route::prefix('waste_type')->group(function () {
 
 Route::prefix('dropbox')->group(function () {
     Route::get('', [DropboxController::class, 'index']);
+    Route::get('/analytics', [DropboxController::class, 'analytics']);
     Route::get('/{id}', [DropboxController::class, 'show']);
     Route::post('/create', [DropboxController::class, 'create']);
     Route::post('/update/{id}', [DropboxController::class, 'update']);
+    Route::post('/generate-report', [DropboxController::class, 'generateReport']);
     Route::delete('/delete/{id}', [DropboxController::class, 'delete']);
 });
 

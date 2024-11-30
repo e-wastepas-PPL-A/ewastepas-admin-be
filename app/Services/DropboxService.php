@@ -18,19 +18,32 @@ use Illuminate\Support\Facades\Log;
 
 class DropboxService
 {
-    public function listDropbox($limit, $search, $filter)
+    public function listDropbox($limit, $search, $filters=[])
     {
         try {
             $user = Auth()->user();
-            $sort = 'desc';
+            $sort = $filters['sort'] ?? 'desc';
 
-            if ($filter == 'asc') {
-                $sort = 'asc';
+            // sanitize data
+            if (isset($limit)) {
+                $limit = htmlspecialchars(strip_tags($limit));
+            } else if (isset($search)) {
+                $search = htmlspecialchars(strip_tags($search));
+            } else if (isset($filters)) {
+                $filters = array_map(function ($item) {
+                    return htmlspecialchars(strip_tags($item));
+                }, $filters);
             }
 
             $data = tap(
                 Dropbox::when($search, function ($query) use ($search) {
-                    return $query->where("name", 'LIKE', "%$search%");
+                    return $query->where("name", 'LIKE', "%$search%")
+                        ->orWhere('address', 'LIKE', "%$search%")
+                        ->orWhere('district_address', 'LIKE', "%$search%");
+                })->when(isset($filters['status']), function ($query) use ($filters) {
+                    return $query->where('status', $filters['status']);
+                })->when(isset($filters['capacity']), function ($query) use ($filters) {
+                    return $query->where('capacity', '>=', $filters['status']);
                 })->when($sort, function ($query) use ($sort) {
                     return $query->orderBy('created_at', $sort);
                 })->paginate($limit),
@@ -73,8 +86,13 @@ class DropboxService
 
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
             
-            if (!in_array($data['status'], ['Avaliable', 'Full'])) {
+            if (!in_array($data['status'], ['Available', 'Full'])) {
                 return [false, 'Status tidak valid', []];
             } else if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
@@ -104,14 +122,20 @@ class DropboxService
     {
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             $dropbox = Dropbox::where(['dropbox_id' => $id])->first();
             if (!$dropbox) {
                 return [false, 'Dropbox tidak ditemukan', []];
             }
 
-            if (!in_array($data['status'], ['Avaliable', 'Full'])) {
+            if (isset($data['status']) && !in_array($data['status'], ['Available', 'Full'])) {
                 return [false, 'Status tidak valid', []];
-            } else if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
+            } else if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
 
@@ -140,6 +164,9 @@ class DropboxService
 
     public function detailDropbox($id)
     {
+        // sanitize data
+        $id = htmlspecialchars(strip_tags($id));
+
         $dropbox = Dropbox::where(['dropbox_id' => $id])->first();
         if (!$dropbox) {
             return [false, 'Dropbox tidak ditemukan', [$id]];
@@ -164,6 +191,8 @@ class DropboxService
     {
         try {
             DB::beginTransaction();
+            // sanitize data
+            $id = htmlspecialchars(strip_tags($id));
             $dropbox = Dropbox::where(['dropbox_id' => $id])->first();
             if (!$dropbox) {
                 return [false, "Dropbox tidak ditemukan", []];
@@ -178,4 +207,50 @@ class DropboxService
         }
     }
 
+    public function getAnalytics()
+    {
+        try {
+            $totalDropbox = Dropbox::count();
+            $statusCount = Dropbox::select('status', DB::raw('count(*) as count'))->groupBy('status')->get();
+            $districtCount = Dropbox::select('district_address', DB::raw('count(*) as count'))->groupBy('district_address')->get();
+            $averageCapacity = Dropbox::avg('capacity');
+
+            $response = [
+                'total_dropbox' => $totalDropbox,
+                'status_count' => $statusCount,
+                'district_count' => $districtCount,
+                'average_capacity' => $averageCapacity
+            ];
+
+            return [true, 'Dropbox Analytics', $response];
+        } catch (\Throwable $exception) {
+            Log::error($exception);
+            return [false, 'Server is busy right now', []];
+        }
+    }
+
+    public function generateReport($startDate, $endDate)
+    {
+        try {
+            // sanitize data
+            $startDate = htmlspecialchars(strip_tags($startDate));
+            $endDate = htmlspecialchars(strip_tags($endDate));
+            $dropboxChanges = Dropbox::whereBetween('updated_at', [$startDate, $endDate])->get();
+            $totalChanges = $dropboxChanges->count();
+            $statusChanges = $dropboxChanges->groupBy('status')->map(function ($item) {
+                return $item->count();
+            });
+
+            $response = [
+                'total_changes' => $totalChanges,
+                'status_changes' => $statusChanges,
+                'dropbox_changes' => $dropboxChanges
+            ];
+
+            return [true, 'Dropbox Report Generated', $response];
+        } catch (\Throwable $exception) {
+            Log::error($exception);
+            return [false, 'Server is busy right now', []];
+        }
+    }
 }

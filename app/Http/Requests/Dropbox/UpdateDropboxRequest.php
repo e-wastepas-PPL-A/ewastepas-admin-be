@@ -25,36 +25,32 @@ class UpdateDropboxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100|string',
-            'address' => 'required|max:255|string',
-            'district_address' => 'required|max:255|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'capacity' => 'required|numeric',
-            'status' => 'required|in:Avaliable,Full',
+            'name' => 'max:100|string',
+            'address' => 'max:255|string',
+            'district_address' => 'max:255|string|in:Bandung Utara,Bandung Selatan,Bandung Barat,Bandung Timur,Cimahi,Kabupaten Bandung,Kabupaten Bandung Barat',
+            'latitude' => 'numeric|between:-90,90',
+            'longitude' => 'numeric|between:-180,180',
+            'capacity' => 'numeric|min:0',
+            'status' => 'in:Avaliable,Full',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Name is required',
+            'name.max' => 'Name max 100 characters',
             'name.string' => 'Name must be string',
-            'name.max' => 'Name is too long',
-            'address.required' => 'Address is required',
+            'address.max' => 'Address max 255 characters',
             'address.string' => 'Address must be string',
-            'address.max' => 'Address is too long',
-            'district_address.required' => 'District Address is required',
+            'district_address.max' => 'District Address max 255 characters',
             'district_address.string' => 'District Address must be string',
-            'district_address.max' => 'District Address is too long',
-            'latitude.required' => 'Latitude is required',
+            'district_address.in' => 'District Address must be Bandung Utara, Bandung Selatan, Bandung Barat, Bandung Timur, Cimahi, Kabupaten Bandung, Kabupaten Bandung Barat',
             'latitude.numeric' => 'Latitude must be numeric',
-            'longitude.required' => 'Longitude is required',
+            'latitude.between' => 'Latitude must be between -90 and 90',
             'longitude.numeric' => 'Longitude must be numeric',
-            'capacity.required' => 'Capacity is required',
+            'longitude.between' => 'Longitude must be between -180 and 180',
             'capacity.numeric' => 'Capacity must be numeric',
-            'status.required' => 'Status is required',
-            'status.string' => 'Status must be string',
+            'capacity.min' => 'Capacity must be greater than or equal to 0',
             'status.in' => 'Status must be Avaliable or Full',
         ];
     }
