@@ -29,6 +29,7 @@ class CourierService
                     ->when($search, function ($query) use ($search) {
                         return $query->where("name", 'LIKE', "%$search%");
                     })
+                    ->where('status', '!=', 'Approved')
                     ->when($sort, function ($query) use ($sort) {
                         return $query->orderBy('created_at', $sort);
                     })
@@ -68,10 +69,6 @@ class CourierService
             );
 
             $data->withPath($limit);
-
-            $data = $data->filter(function ($item) {
-                return $item['status'] == 'Pending' || $item['status'] == 'Reject';
-            });
 
             $response = [
                 'Courier' => $data

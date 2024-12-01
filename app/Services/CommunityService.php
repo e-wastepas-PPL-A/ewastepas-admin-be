@@ -29,6 +29,7 @@ class CommunityService
                     ->when($search, function ($query) use ($search) {
                         return $query->where("name", 'LIKE', "%$search%");
                     })
+                    ->where('is_verified', 0)
                     ->when($sort, function ($query) use ($sort) {
                         return $query->orderBy('created_at', $sort);
                     })
@@ -63,10 +64,6 @@ class CommunityService
             );
 
             $data->withPath($limit);
-
-            $data = $data->filter(function ($item) {
-                return $item['is_verified'] == 0;
-            });
 
             $response = [
                 'Community' => $data
