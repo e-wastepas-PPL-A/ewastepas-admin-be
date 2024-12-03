@@ -35,7 +35,6 @@ class CreateWasteTypeRequest extends FormRequest
         return [
             'waste_type_name.required' => 'Waste type name is required',
             'waste_type_name.max' => 'Waste type name max 100 characters',
-            'image.required' => 'Image is required',
         ];
     }
 

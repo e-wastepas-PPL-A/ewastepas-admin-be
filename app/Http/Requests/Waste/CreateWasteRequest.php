@@ -41,7 +41,7 @@ class CreateWasteRequest extends FormRequest
             'waste_name.max' => 'Waste name max 100 characters',
             'point.required' => 'Point is required',
             'point.numeric' => 'Point must be a number',
-            'image.required' => 'Image is required',
+            // 'image.required' => 'Image is required',
             'description.required' => 'Description is required',
             'description.max' => 'Description max 255 characters',
             'waste_type_id.required' => 'Waste type is required',
