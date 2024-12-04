@@ -92,9 +92,7 @@ class DropboxService
                 return htmlspecialchars(strip_tags($item));
             }, $data);
             
-            if (isset($data['status'])) {
-                return [false, 'Status tidak dapat ditambahkan', []];
-            } else if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
+            if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
 
@@ -105,7 +103,6 @@ class DropboxService
                 'longitude' => $data['longitude'],
                 'latitude' => $data['latitude'],
                 'capacity' => $data['capacity'],
-                'status' => $data['status'],
                 'created_at'  => now(),
                 'updated_at'  => now()
             ]);
@@ -133,9 +130,7 @@ class DropboxService
                 return [false, 'Dropbox tidak ditemukan', []];
             }
 
-            if (isset($data['status'])) {
-                return [false, 'Status tidak dapat diubah', []];
-            } else if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
+            if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
 
