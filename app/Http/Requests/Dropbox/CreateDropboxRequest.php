@@ -30,8 +30,7 @@ class CreateDropboxRequest extends FormRequest
             'district_address' => 'required|max:255|string|in:Bandung Utara,Bandung Selatan,Bandung Barat,Bandung Timur,Cimahi,Kabupaten Bandung,Kabupaten Bandung Barat',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-            'capacity' => 'required|numeric|min:0',
-            'status' => 'required|in:Available,Full',
+            'capacity' => 'required|numeric|min:0'
         ];
     }
 
@@ -56,9 +55,7 @@ class CreateDropboxRequest extends FormRequest
             'longitude.between' => 'Longitude must be between -180 and 180',
             'capacity.required' => 'Capacity is required',
             'capacity.numeric' => 'Capacity must be numeric',
-            'capacity.min' => 'Capacity must be greater than or equal to 0',
-            'status.required' => 'Status is required',
-            'status.in' => 'Status must be Available or Full',
+            'capacity.min' => 'Capacity must be greater than or equal to 0'
         ];
     }
 
