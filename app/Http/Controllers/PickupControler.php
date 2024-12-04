@@ -53,6 +53,21 @@ class PickupControler extends Controller
         }
         return ResponseJson::successResponse($message, $data);
     }
+    public function listPickupHistories(Request $request)
+    {
+        if (!$limit = request()->limit) {
+            $limit = 10;
+        }
+        if (!$search = request()->search) {
+            $search = null;
+        }
+        // login
+        [$proceed, $message, $data] = (new PickupService())->listPickupHistories($limit, $search);
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
     public function detailPickupUser($id)
     {
 

@@ -50,6 +50,32 @@ class PickupService
             return [false, 'Server is busy right now', []];
         }
     }
+    public function listPickupHistories($limit, $search)
+    {
+        try {
+            // $user = Auth()->user();
+
+            // Start the query builder
+            $data = PickupWaste::query()
+                ->with('courier') // Ensure that the related 'community' model is loaded
+                ->when($search, function ($query) use ($search) {
+                    return $query->whereHas('courier', function ($query) use ($search) {
+                        $query->where("name", 'LIKE', "%$search%"); // Search for community name
+                    });
+                })
+                ->paginate($limit);
+
+            $data->withPath($limit);
+
+            $response = [
+                'pickups' => $data
+            ];
+            return [true, 'List pickups', $response];
+        } catch (\Throwable $exception) {
+            Log::error($exception);
+            return [false, 'Server is busy right now', []];
+        }
+    }
     public function listPickupCourier($limit, $search)
     {
         try {

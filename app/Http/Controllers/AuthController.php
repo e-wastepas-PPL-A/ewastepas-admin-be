@@ -21,22 +21,6 @@ use Laravel\Socialite\Facades\Socialite;
 class AuthController extends Controller
 {
 
-    public function register(RegisterUserRequest $request)
-    {
-        [$proceed, $message, $data] = (new AuthUserService())->register($request->name, $request->email, $request->password);
-        if (!$proceed) {
-            return ResponseJson::failedResponse($message, $data);
-        }
-        return ResponseJson::successResponse($message, $data);
-    }
-    public function otpCodeConfirmation(OtpConfirmationRequest $request)
-    {
-        [$proceed, $message, $data] = (new AuthUserService())->otpConfirmation($request->code, $request->email);
-        if (!$proceed) {
-            return ResponseJson::failedResponse($message, $data);
-        }
-        return ResponseJson::successResponse($message, $data);
-    }
     public function otpCodeForgotPasswordConfirmation(OtpConfirmationRequest $request)
     {
         [$proceed, $message, $data] = (new AuthUserService())->otpForgetPasswordConfirmation($request->code, $request->email);
@@ -56,26 +40,6 @@ class AuthController extends Controller
     public function resendOtpCode(ResendOtpRequest $request)
     {
         [$proceed, $message, $data] = (new AuthUserService())->resendOtpToEmail($request->email);
-        if (!$proceed) {
-            return ResponseJson::failedResponse($message, $data);
-        }
-        return ResponseJson::successResponse($message, $data);
-    }
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->stateless()->redirect();
-        // return ResponseJson::successResponse("Login with google", ['target_url' => $data->getTargetUrl()]);
-    }
-    /**
-     * Method googleCallback
-     *
-     * @return void
-     */
-    public function googleCallback()
-    {
-        $google_user = Socialite::driver('google')->stateless()->user();
-
-        [$proceed, $message, $data] = (new AuthUserService())->googleCallback($google_user);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
@@ -106,7 +70,7 @@ class AuthController extends Controller
             'password' => $request->password,
             'reset_pass_token' => $request->reset_pass_token,
         ];
-        // reset password 
+        // reset password
         [$proceed, $message, $data] = (new AuthUserService())->updatePassword($payload);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
@@ -120,14 +84,5 @@ class AuthController extends Controller
         $user->tokens()->delete();
 
         return ResponseJson::successResponse('Berhasil logout', []);
-    }
-
-    public function checkEmailAvailable(Request $request)
-    {
-        [$proceed, $message, $data] = (new AuthUserService())->checkEmailAvailable($request->email);
-        if (!$proceed) {
-            return ResponseJson::failedResponse($message, $data);
-        }
-        return ResponseJson::successResponse($message, $data);
     }
 }

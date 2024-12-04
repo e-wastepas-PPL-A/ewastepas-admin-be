@@ -31,12 +31,9 @@ class AuthUserService
                 //> check password
                 if (Hash::check($password, $userLogin->password)) {
 
-                    // delete personal acess token by id
-                    if (env('APP_ENV') != 'local') {
-                        $this->deleteTokenSanctum($userLogin->id);
-                    }
+                    $this->deleteTokenSanctum($userLogin->id);
 
-                    $tokenAirlock = $userLogin->createToken('member', ['accessLoginAdmin']);
+                    $tokenAirlock = $userLogin->createToken('admin', ['accessLoginAdmin']);
 
                     $response = [
                         'token' => $tokenAirlock->plainTextToken,
