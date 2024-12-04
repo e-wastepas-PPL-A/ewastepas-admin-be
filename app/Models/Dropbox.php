@@ -17,7 +17,10 @@ class Dropbox extends Model
         'district_address',
         'latitude',
         'longitude',
-        'capacity',
+        'capacity'
+    ];
+
+    protected $hidden = [
         'status'
     ];
     public $incrementing = true;

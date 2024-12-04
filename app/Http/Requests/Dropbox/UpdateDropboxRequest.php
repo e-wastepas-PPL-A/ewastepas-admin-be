@@ -31,7 +31,6 @@ class UpdateDropboxRequest extends FormRequest
             'latitude' => 'numeric|between:-90,90',
             'longitude' => 'numeric|between:-180,180',
             'capacity' => 'numeric|min:0',
-            'status' => 'in:Avaliable,Full',
         ];
     }
 
@@ -51,7 +50,6 @@ class UpdateDropboxRequest extends FormRequest
             'longitude.between' => 'Longitude must be between -180 and 180',
             'capacity.numeric' => 'Capacity must be numeric',
             'capacity.min' => 'Capacity must be greater than or equal to 0',
-            'status.in' => 'Status must be Avaliable or Full',
         ];
     }
 

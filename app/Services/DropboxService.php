@@ -133,8 +133,8 @@ class DropboxService
                 return [false, 'Dropbox tidak ditemukan', []];
             }
 
-            if (isset($data['status']) && !in_array($data['status'], ['Available', 'Full'])) {
-                return [false, 'Status tidak valid', []];
+            if (isset($data['status'])) {
+                return [false, 'Status tidak dapat diubah', []];
             } else if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
