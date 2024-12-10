@@ -96,17 +96,34 @@ class DropboxService
                 return [false, 'District Address tidak valid', []];
             }
 
-            Dropbox::create([
-                'name' => $data['name'],
-                'address' => $data['address'],
-                'district_address' => $data['district_address'],
-                'longitude' => $data['longitude'],
-                'latitude' => $data['latitude'],
-                'capacity' => $data['capacity'],
-                'created_at'  => now(),
-                'updated_at'  => now()
+            // Dropbox::create([
+            //     'name' => $data['name'],
+            //     'address' => $data['address'],
+            //     'district_address' => $data['district_address'],
+            //     'longitude' => $data['longitude'],
+            //     'latitude' => $data['latitude'],
+            //     'capacity' => $data['capacity'],
+            //     'created_at'  => now(),
+            //     'updated_at'  => now()
+            // ]);
+
+            DB::statement('CALL add_dropbox(?, ?, ?, ?, ?, ?)', [
+                $data['name'],
+                $data['address'],
+                $data['district_address'],
+                $data['longitude'],
+                $data['latitude'],
+                $data['capacity']
             ]);
+
             DB::commit();
+            
+            $id = Dropbox::where(['name' => $data['name']])->first()->dropbox_id;
+            $capacity = Dropbox::where(['name' => $data['name']])->first()->capacity;
+
+            if ($capacity >= 100) {
+                Dropbox::where(['dropbox_id' => $id])->update(['status' => 'Full']);
+            }
             return [true, 'Berhasil Menambahkan dropbox', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
@@ -134,19 +151,29 @@ class DropboxService
                 return [false, 'District Address tidak valid', []];
             }
 
-            $payload = [
-                'name' => $data['name'] ?? $dropbox->name,
-                'address' => $data['address'] ?? $dropbox->address,
-                'district_address' => $data['district_address'] ?? $dropbox->district_address,
-                'longitude' => $data['longitude'] ?? $dropbox->longitude,
-                'latitude' => $data['latitude'] ?? $dropbox->latitude,
-                'capacity' => $data['capacity'] ?? $dropbox->capacity,
-                'status' => $data['status'] ?? $dropbox->status,
-                'updated_at' => now()
-            ];
+            // $payload = [
+            //     'name' => $data['name'] ?? $dropbox->name,
+            //     'address' => $data['address'] ?? $dropbox->address,
+            //     'district_address' => $data['district_address'] ?? $dropbox->district_address,
+            //     'longitude' => $data['longitude'] ?? $dropbox->longitude,
+            //     'latitude' => $data['latitude'] ?? $dropbox->latitude,
+            //     'capacity' => $data['capacity'] ?? $dropbox->capacity,
+            //     'status' => $data['status'] ?? $dropbox->status,
+            //     'updated_at' => now()
+            // ];
 
-            //> create produk
-            Dropbox::where(['dropbox_id' => $id])->update($payload);
+            // //> create produk
+            // Dropbox::where(['dropbox_id' => $id])->update($payload);
+
+            DB::statement('CALL update_dropbox(?, ?, ?, ?, ?, ?, ?)', [
+                $id,
+                $data['name'] ?? $dropbox->name,
+                $data['address'] ?? $dropbox->address,
+                $data['district_address'] ?? $dropbox->district_address,
+                $data['longitude'] ?? $dropbox->longitude,
+                $data['latitude'] ?? $dropbox->latitude,
+                $data['capacity'] ?? $dropbox->capacity
+            ]);
 
             DB::commit();
             return [true, 'Berhasil Memperbaharui dropbox', []];
@@ -192,7 +219,10 @@ class DropboxService
             if (!$dropbox) {
                 return [false, "Dropbox tidak ditemukan", []];
             }
-            Dropbox::where(['dropbox_id' => $id])->delete();
+            // Dropbox::where(['dropbox_id' => $id])->delete();
+
+            DB::statement('CALL delete_dropbox(?)', [$id]);
+
             DB::commit();
             return [true, 'Dropbox berhasil dihapus', []];
         } catch (\Throwable $exception) {
