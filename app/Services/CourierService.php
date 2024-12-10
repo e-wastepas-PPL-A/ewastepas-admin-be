@@ -86,24 +86,38 @@ class CourierService
 
         try {
             DB::beginTransaction();
-            Courier::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'phone' => $data['phone'],
-                'date_of_birth' => $data['date_of_birth'],
-                'address' => $data['address'],
-                'account_number' => $data['account_number'],
-                'nik' => $data['nik'],
-                'ktp_url' => $data['ktp_url'],
-                'kk_url' => $data['kk_url'],
-                'photo' => $data['photo'],
-                'is_verified' => 0,
-                'is_active' => 0,
-                'otp_code' => null,
-                'otp_expiry' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+            // Courier::create([
+            //     'name' => $data['name'],
+            //     'email' => $data['email'],
+            //     'password' => Hash::make($data['password']),
+            //     'phone' => $data['phone'],
+            //     'date_of_birth' => $data['date_of_birth'],
+            //     'address' => $data['address'],
+            //     'account_number' => $data['account_number'],
+            //     'nik' => $data['nik'],
+            //     'ktp_url' => $data['ktp_url'],
+            //     'kk_url' => $data['kk_url'],
+            //     'photo' => $data['photo'],
+            //     'is_verified' => 0,
+            //     'is_active' => 0,
+            //     'otp_code' => null,
+            //     'otp_expiry' => null,
+            //     'created_at' => now(),
+            //     'updated_at' => now()
+            // ]);
+
+            DB::statement('CALL register_courier(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                $data['name'],
+                $data['email'],
+                Hash::make($data['password']),
+                $data['phone'],
+                $data['date_of_birth'],
+                $data['address'],
+                $data['account_number'],
+                $data['nik'],
+                $data['ktp_url'],
+                $data['kk_url'],
+                $data['photo']
             ]);
 
             DB::commit();
@@ -184,9 +198,14 @@ class CourierService
                 return [false, 'Status tidak valid', []];
             }
 
-            $Courier->update([
-                'status' => $data['status'],
-                'updated_at' => now()
+            // $Courier->update([
+            //     'status' => $data['status'],
+            //     'updated_at' => now()
+            // ]);
+
+            DB::statement('CALL approve_courier_registration(?, ?)', [
+                $id,
+                $data['status']
             ]);
             
             if ($data['status'] == 'Approved') {
