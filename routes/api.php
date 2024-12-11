@@ -90,8 +90,11 @@ Route::prefix('dropbox')->group(function () {
 
 Route::prefix('auth')->group(function () {
 
-    Route::post('/login', [AuthController::class, 'login']);
-
+    Route::get('/login', function () {
+        return view('login');
+    })->name('login.page');
+    
+    Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');;
     Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ability:accessLoginAdmin']);
 });
 

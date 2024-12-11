@@ -52,6 +52,10 @@ class AuthController extends Controller
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
+        // Redirect jika login berhasil
+        if (isset($data['redirect'])) {
+            return redirect($data['redirect']); // Redirect ke URL yang dikembalikan
+        }
         return ResponseJson::successResponse($message, $data);
     }
 
