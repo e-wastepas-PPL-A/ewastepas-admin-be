@@ -25,7 +25,7 @@ class CreateWasteTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'waste_type_name' => 'required|max:100',
+            'waste_type_name' => 'required|max:100|regex:/^[a-zA-Z\s]+$/',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

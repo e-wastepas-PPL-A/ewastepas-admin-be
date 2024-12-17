@@ -25,10 +25,10 @@ class CreateWasteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'waste_name' => 'required|max:100',
+            'waste_name' => 'required|max:100|regex:/^[a-zA-Z\s]+$/',
             'point' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'description' => 'required|max:255',
+            'description' => 'required|max:255|regex:/^[a-zA-Z0-9\s.,\/-]+$/',
             'waste_type_id' => 'required|numeric',
             // 'pickup_id' => 'required|numeric',
         ];

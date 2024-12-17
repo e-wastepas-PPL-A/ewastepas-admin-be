@@ -20,10 +20,13 @@ class WasteService
     {
         try {
             $user = Auth()->user();
-            $sort = 'desc';
+            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
 
-            if ($filter == 'asc') {
-                $sort = 'asc';
+            // sanitize data
+            if (isset($limit)) {
+                $limit = htmlspecialchars(strip_tags($limit));
+            } else if (isset($search)) {
+                $search = htmlspecialchars(strip_tags($search));
             }
 
             $data = tap(
@@ -80,6 +83,11 @@ class WasteService
             //     return [false, 'Waste Type tidak ditemukan', []];
             // }
 
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             // Proses unggah file gambar (jika ada)
             $photoUrl = null;
             if (isset($data['image'])) {
@@ -111,6 +119,12 @@ class WasteService
     {
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             $Waste = Waste::where(['waste_id' => $id])->first();
             if (!$Waste) {
                 return [false, 'Waste tidak ditemukan', []];
@@ -162,6 +176,8 @@ class WasteService
 
     public function detailWaste($id)
     {
+        $id = htmlspecialchars(strip_tags($id));
+
         $Waste = Waste::where(['waste_id' => $id])->first();
         if (!$Waste) {
             return [false, 'Waste tidak ditemukan', [$id]];
@@ -187,6 +203,7 @@ class WasteService
     {
         try {
             DB::beginTransaction();
+            $id = htmlspecialchars(strip_tags($id));
             $Waste = Waste::where(['waste_id' => $id])->first();
             if (!$Waste) {
                 return [false, "Waste tidak ditemukan", []];

@@ -20,10 +20,13 @@ class WasteTypeService
     {
         try {
             $user = Auth()->user();
-            $sort = 'desc';
+            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
 
-            if ($filter == 'asc') {
-                $sort = 'asc';
+            // sanitize data
+            if (isset($limit)) {
+                $limit = htmlspecialchars(strip_tags($limit));
+            } else if (isset($search)) {
+                $search = htmlspecialchars(strip_tags($search));
             }
 
             $data = tap(
@@ -66,6 +69,11 @@ class WasteTypeService
         try {
             DB::beginTransaction();
 
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             $photoUrl = null;
             if (isset($data['image'])) {
                 $file = $data['image'];
@@ -92,6 +100,12 @@ class WasteTypeService
     {
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             $jenis_Waste = WasteType::where(['waste_type_id' => $id])->first();
             if (!$jenis_Waste) {
                 return [false, 'Waste Type tidak ditemukan', []];
@@ -129,6 +143,8 @@ class WasteTypeService
 
     public function detailWasteType($id)
     {
+        $id = htmlspecialchars(strip_tags($id));
+
         $Waste = WasteType::where(['waste_type_id' => $id])->first();
         if (!$Waste) {
             return [false, 'Waste Type tidak ditemukan', [$id]];
@@ -148,6 +164,8 @@ class WasteTypeService
     {
         try {
             DB::beginTransaction();
+            $id = htmlspecialchars(strip_tags($id));
+            
             $Waste = Waste::where(['waste_type_id' => $id])->first();
 
             if ($Waste) {

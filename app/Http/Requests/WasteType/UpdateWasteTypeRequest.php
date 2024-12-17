@@ -25,7 +25,7 @@ class UpdateWasteTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'waste_type_name' => 'max:100',
+            'waste_type_name' => 'max:100|regex:/^[a-zA-Z\s]+$/',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
