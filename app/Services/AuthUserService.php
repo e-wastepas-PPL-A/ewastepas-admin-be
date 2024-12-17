@@ -29,20 +29,24 @@ class AuthUserService
             // if login true
             if ($userLogin) {
                 //> check password
-                if (Hash::check($password, $userLogin->password)) {
+                // if (Hash::check($password, $userLogin->password)) {
 
-                    $this->deleteTokenSanctum($userLogin->id);
+                //     $this->deleteTokenSanctum($userLogin->id);
 
-                    $tokenAirlock = $userLogin->createToken('admin', ['accessLoginAdmin']);
+                //     $tokenAirlock = $userLogin->createToken('admin', ['accessLoginAdmin']);
 
-                    $response = [
-                        'token' => $tokenAirlock->plainTextToken,
-                        'is_active' => true
-                    ];
-                    return [true, 'Login berhasil', $response];
+                //     $response = [
+                //         'token' => $tokenAirlock->plainTextToken,
+                //         'is_active' => true
+                //     ];
+                //     return [true, 'Login berhasil', $response];
+                // }
+
+                if ($password === $userLogin->password) {
+                    return [true, 'Login berhasil', ['redirect' => 'http://localhost:5173/']];
                 }
+                return [false, 'Email atau Password Tidak Sesuai', []];
             }
-            return [false, 'Email atau Password Tidak Sesuai', []];
         } catch (\Throwable $exception) {
             Log::error($exception);
             return [false, 'Server is busy right now', []];

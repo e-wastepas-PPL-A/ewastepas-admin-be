@@ -8,9 +8,11 @@ use App\Helpers\LinkyiStorage;
 use App\Models\Admin;
 use App\Models\Dropbox;
 use App\Models\LinkProduct;
-use App\Models\Product;
-use App\Models\ProductCategory;
-use App\Models\ProductView;
+use App\Models\PickupWaste;
+use App\Models\PickupDetail;
+use App\Models\Waste;
+use App\Models\Community;
+use App\Models\Courier;
 use App\Models\Store;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +24,7 @@ class DropboxService
     {
         try {
             $user = Auth()->user();
-            $sort = $filters['sort'] ?? 'desc';
+            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
 
             // sanitize data
             if (isset($limit)) {
@@ -92,24 +94,38 @@ class DropboxService
                 return htmlspecialchars(strip_tags($item));
             }, $data);
             
-            if (isset($data['status'])) {
-                return [false, 'Status tidak dapat ditambahkan', []];
-            } else if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
+            if (!in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
 
-            Dropbox::create([
-                'name' => $data['name'],
-                'address' => $data['address'],
-                'district_address' => $data['district_address'],
-                'longitude' => $data['longitude'],
-                'latitude' => $data['latitude'],
-                'capacity' => $data['capacity'],
-                'status' => $data['status'],
-                'created_at'  => now(),
-                'updated_at'  => now()
+            // Dropbox::create([
+            //     'name' => $data['name'],
+            //     'address' => $data['address'],
+            //     'district_address' => $data['district_address'],
+            //     'longitude' => $data['longitude'],
+            //     'latitude' => $data['latitude'],
+            //     'capacity' => $data['capacity'],
+            //     'created_at'  => now(),
+            //     'updated_at'  => now()
+            // ]);
+
+            DB::statement('CALL add_dropbox(?, ?, ?, ?, ?, ?)', [
+                $data['name'],
+                $data['address'],
+                $data['district_address'],
+                $data['longitude'],
+                $data['latitude'],
+                $data['capacity']
             ]);
+
             DB::commit();
+            
+            $id = Dropbox::where(['name' => $data['name']])->first()->dropbox_id;
+            $capacity = Dropbox::where(['name' => $data['name']])->first()->capacity;
+
+            if ($capacity >= 100) {
+                Dropbox::where(['dropbox_id' => $id])->update(['status' => 'Full']);
+            }
             return [true, 'Berhasil Menambahkan dropbox', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
@@ -133,25 +149,33 @@ class DropboxService
                 return [false, 'Dropbox tidak ditemukan', []];
             }
 
-            if (isset($data['status'])) {
-                return [false, 'Status tidak dapat diubah', []];
-            } else if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
+            if (isset($data['district_address']) && !in_array($data['district_address'], ['Bandung Utara', 'Bandung Selatan', 'Bandung Barat', 'Bandung Timur', 'Cimahi', 'Kabupaten Bandung', 'Kabupaten Bandung Barat'])) {
                 return [false, 'District Address tidak valid', []];
             }
 
-            $payload = [
-                'name' => $data['name'] ?? $dropbox->name,
-                'address' => $data['address'] ?? $dropbox->address,
-                'district_address' => $data['district_address'] ?? $dropbox->district_address,
-                'longitude' => $data['longitude'] ?? $dropbox->longitude,
-                'latitude' => $data['latitude'] ?? $dropbox->latitude,
-                'capacity' => $data['capacity'] ?? $dropbox->capacity,
-                'status' => $data['status'] ?? $dropbox->status,
-                'updated_at' => now()
-            ];
+            // $payload = [
+            //     'name' => $data['name'] ?? $dropbox->name,
+            //     'address' => $data['address'] ?? $dropbox->address,
+            //     'district_address' => $data['district_address'] ?? $dropbox->district_address,
+            //     'longitude' => $data['longitude'] ?? $dropbox->longitude,
+            //     'latitude' => $data['latitude'] ?? $dropbox->latitude,
+            //     'capacity' => $data['capacity'] ?? $dropbox->capacity,
+            //     'status' => $data['status'] ?? $dropbox->status,
+            //     'updated_at' => now()
+            // ];
 
-            //> create produk
-            Dropbox::where(['dropbox_id' => $id])->update($payload);
+            // //> create produk
+            // Dropbox::where(['dropbox_id' => $id])->update($payload);
+
+            DB::statement('CALL update_dropbox(?, ?, ?, ?, ?, ?, ?)', [
+                $id,
+                $data['name'] ?? $dropbox->name,
+                $data['address'] ?? $dropbox->address,
+                $data['district_address'] ?? $dropbox->district_address,
+                $data['longitude'] ?? $dropbox->longitude,
+                $data['latitude'] ?? $dropbox->latitude,
+                $data['capacity'] ?? $dropbox->capacity
+            ]);
 
             DB::commit();
             return [true, 'Berhasil Memperbaharui dropbox', []];
@@ -172,6 +196,15 @@ class DropboxService
             return [false, 'Dropbox tidak ditemukan', [$id]];
         }
 
+        $pickupId = PickupWaste::where(['dropbox_id' => $id])->pluck('pickup_id');
+        $pickupDetail = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('waste_id');
+        $pickupQuantity = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('quantity');
+        $waste = Waste::whereIn('waste_id', $pickupDetail)->get();
+        $community = PickupWaste::where(['dropbox_id' => $id])->pluck('community_id');
+        $communityName = Community::whereIn('community_id', $community)->get();
+        $courier = PickupWaste::where(['dropbox_id' => $id])->pluck('courier_id');
+        $courierName = Courier::whereIn('courier_id', $courier)->pluck('name');
+
         $response = [
             'dropbox_id' => $dropbox->dropbox_id,
             'name' => $dropbox->name,
@@ -183,6 +216,11 @@ class DropboxService
             'status' => $dropbox->status,
             'created_at' => $dropbox->created_at,
             'updated_at' => $dropbox->updated_at,
+            'nama' => $communityName->pluck('name')[0],
+            'alamat' => $communityName->pluck('address')[0],
+            'jenis_sampah' => $waste->pluck('waste_name')[0],
+            'jumlah' => $pickupQuantity[0],
+            'point' => $waste->pluck('point')[0]
         ];
         return [true, "Detail dropbox", $response];
     }
@@ -197,7 +235,10 @@ class DropboxService
             if (!$dropbox) {
                 return [false, "Dropbox tidak ditemukan", []];
             }
-            Dropbox::where(['dropbox_id' => $id])->delete();
+            // Dropbox::where(['dropbox_id' => $id])->delete();
+
+            DB::statement('CALL delete_dropbox(?)', [$id]);
+
             DB::commit();
             return [true, 'Dropbox berhasil dihapus', []];
         } catch (\Throwable $exception) {

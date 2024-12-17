@@ -25,10 +25,10 @@ class UpdateWasteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'waste_name' => 'max:100',
+            'waste_name' => 'max:100|regex:/^[a-zA-Z\s]+$/',
             'point' => 'numeric',
-            'image' => 'nullable',
-            'description' => 'max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description' => 'max:255|regex:/^[a-zA-Z0-9\s.,\/-]+$/',
             'waste_type_id' => 'numeric',
             'pickup_id' => 'numeric',
         ];
@@ -39,6 +39,9 @@ class UpdateWasteRequest extends FormRequest
         return [
             'waste_name.max' => 'Waste name max 100 characters',
             'point.numeric' => 'Point must be a number',
+            'image.image' => 'Image must be an image',
+            'image.mimes' => 'Image must be jpeg, png, jpg, gif, svg',
+            'image.max' => 'Image max 2048 KB',
             'description.max' => 'Description max 255 characters',
             'waste_type_id.numeric' => 'Waste type must be a number',
             'pickup_id.numeric' => 'Pickup id must be a number',

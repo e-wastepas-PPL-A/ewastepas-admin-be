@@ -25,9 +25,9 @@ class CreateDropboxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100|string',
-            'address' => 'required|max:255|string',
-            'district_address' => 'required|max:255|string|in:Bandung Utara,Bandung Selatan,Bandung Barat,Bandung Timur,Cimahi,Kabupaten Bandung,Kabupaten Bandung Barat',
+            'name' => 'required|max:100|regex:/^[a-zA-Z\s]+$/',
+            'address' => 'required|max:255|regex:/^[a-zA-Z0-9\s.,\/-]+$/',
+            'district_address' => 'required|max:255|regex:/^[a-zA-Z\s]+$/|in:Bandung Utara,Bandung Selatan,Bandung Barat,Bandung Timur,Cimahi,Kabupaten Bandung,Kabupaten Bandung Barat',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'capacity' => 'required|numeric|min:0'

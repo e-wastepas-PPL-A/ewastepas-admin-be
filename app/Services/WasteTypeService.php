@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class WasteTypeService
 {
@@ -18,10 +20,13 @@ class WasteTypeService
     {
         try {
             $user = Auth()->user();
-            $sort = 'desc';
+            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
 
-            if ($filter == 'asc') {
-                $sort = 'asc';
+            // sanitize data
+            if (isset($limit)) {
+                $limit = htmlspecialchars(strip_tags($limit));
+            } else if (isset($search)) {
+                $search = htmlspecialchars(strip_tags($search));
             }
 
             $data = tap(
@@ -63,9 +68,22 @@ class WasteTypeService
 
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
+            $photoUrl = null;
+            if (isset($data['image'])) {
+                $file = $data['image'];
+                $path = $file->store('uploads/waste_photos', 'public');
+                $photoUrl = Storage::url($path); // Dapatkan URL gambar
+            }
+
             WasteType::create([
                 'waste_type_name' => $data['waste_type_name'],
-                'image' => $data['image'] ?? null,
+                'image' => $photoUrl,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -82,14 +100,32 @@ class WasteTypeService
     {
         try {
             DB::beginTransaction();
+
+            // sanitize data
+            $data = array_map(function ($item) {
+                return htmlspecialchars(strip_tags($item));
+            }, $data);
+
             $jenis_Waste = WasteType::where(['waste_type_id' => $id])->first();
             if (!$jenis_Waste) {
                 return [false, 'Waste Type tidak ditemukan', []];
             }
 
+            $imagePath = $jenis_Waste->image; // Default ke gambar lama
+            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+                $file = $data['image'];
+                if (is_array($file) && count($file) > 1) {
+                    return [false, 'Hanya dapat mengunggah satu gambar!', []];
+                }
+
+                // Unggah file gambar baru
+                $path = $file->store('uploads/waste_photos', 'public');
+                $photoUrl = Storage::url($path); // Dapatkan URL gambar
+            }
+
             $payload = [
                 'waste_type_name' => $data['waste_type_name'] ?? $jenis_Waste->waste_type_name,
-                'image' => $data['image'] ?? $jenis_Waste->image,
+                'image' => $photoUrl ?? $imagePath,
                 'updated_at' => now(),
             ];
 
@@ -107,6 +143,8 @@ class WasteTypeService
 
     public function detailWasteType($id)
     {
+        $id = htmlspecialchars(strip_tags($id));
+
         $Waste = WasteType::where(['waste_type_id' => $id])->first();
         if (!$Waste) {
             return [false, 'Waste Type tidak ditemukan', [$id]];
@@ -126,6 +164,8 @@ class WasteTypeService
     {
         try {
             DB::beginTransaction();
+            $id = htmlspecialchars(strip_tags($id));
+            
             $Waste = Waste::where(['waste_type_id' => $id])->first();
 
             if ($Waste) {

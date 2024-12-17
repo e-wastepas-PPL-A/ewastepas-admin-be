@@ -23,4 +23,8 @@ class PickupWaste extends Model
     {
         return $this->hasMany(PickupDetail::class, 'pickup_id', 'pickup_id');
     }
+    public function dropbox()
+    {
+        return $this->belongsTo(Dropbox::class, 'dropbox_id', 'dropbox_id');
+    }
 }

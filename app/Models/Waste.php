@@ -14,7 +14,7 @@ class Waste extends Model
     protected $primaryKey = 'waste_id';
 
     protected $fillable = [
-        'waste_name', 'point', 'waste_type_id', 'image', 'description', 'created_at', 'updated_at'
+        'waste_name', 'point', 'waste_type_id', 'image', 'description', 'created_at', 'updated_at, pickup_id'
     ];
 
     public function wasteType()

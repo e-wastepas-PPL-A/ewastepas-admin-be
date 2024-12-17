@@ -81,19 +81,29 @@ class CommunityService
 
         try {
             DB::beginTransaction();
-            Community::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'phone' => $data['phone'],
-                'date_of_birth' => $data['date_of_birth'],
-                'address' => $data['address'],
-                'photo' => $data['photo'],
-                'is_verified' => 0,
-                'otp_code' => null,
-                'otp_expiry' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+            // Community::create([
+            //     'name' => $data['name'],
+            //     'email' => $data['email'],
+            //     'password' => Hash::make($data['password']),
+            //     'phone' => $data['phone'],
+            //     'date_of_birth' => $data['date_of_birth'],
+            //     'address' => $data['address'],
+            //     'photo' => $data['photo'],
+            //     'is_verified' => 0,
+            //     'otp_code' => null,
+            //     'otp_expiry' => null,
+            //     'created_at' => now(),
+            //     'updated_at' => now()
+            // ]);
+
+            DB::statement('CALL register_community(?, ?, ?, ?, ?, ?, ?)', [
+                $data['name'],
+                $data['email'],
+                Hash::make($data['password']),
+                $data['phone'],
+                $data['date_of_birth'],
+                $data['address'],
+                $data['photo']
             ]);
 
             DB::commit();
@@ -162,8 +172,6 @@ class CommunityService
             // Check if community account_number, nik, ktp_url, kk_url, photo, is_verified is empty
             if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address) || empty($Community->photo)) {
                 return [false, 'Community belum melengkapi data', []];
-            } else if ($Community->is_verified == 1) {
-                return [false, 'Community sudah diverifikasi', []];
             }
             
             // Jika data['is_verified'] bukan 0 atau 1 maka return false
@@ -171,11 +179,16 @@ class CommunityService
                 return [false, 'Verifikasi tidak valid', []];
             }
 
-            $Community->update([
-                'is_verified' => $data['is_verified'],
-                'updated_at' => now()
-            ]);
+            // $Community->update([
+            //     'is_verified' => $data['is_verified'],
+            //     'updated_at' => now()
+            // ]);
             
+            DB::statement('CALL approve_community_registration(?, ?)', [
+                $id,
+                $data['is_verified']
+            ]);
+
             CommunityPoints::create([
                 'community_id' => $Community->community_id,
                 'total_points' => 0,
