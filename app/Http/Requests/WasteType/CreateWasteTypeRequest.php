@@ -26,7 +26,7 @@ class CreateWasteTypeRequest extends FormRequest
     {
         return [
             'waste_type_name' => 'required|max:100',
-            'image' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
@@ -35,6 +35,9 @@ class CreateWasteTypeRequest extends FormRequest
         return [
             'waste_type_name.required' => 'Waste type name is required',
             'waste_type_name.max' => 'Waste type name max 100 characters',
+            'image.image' => 'Image must be an image',
+            'image.mimes' => 'Image must be jpeg, png, jpg, gif, svg',
+            'image.max' => 'Image max 2048 KB',
         ];
     }
 
