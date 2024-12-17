@@ -34,7 +34,8 @@ class PickupService
                     'name' => $item->community->name, // Access community name from related model
                     'point' => $item->pickup_address,
                     'status' => $item->pickup_status,
-                    'pickup_detail' => $item->pickupDetail
+                    'pickup_detail' => $item->pickupDetail,
+                    'date' => $item->created_at
                 ];
             });
 
