@@ -8,9 +8,11 @@ use App\Helpers\LinkyiStorage;
 use App\Models\Admin;
 use App\Models\Dropbox;
 use App\Models\LinkProduct;
-use App\Models\Product;
-use App\Models\ProductCategory;
-use App\Models\ProductView;
+use App\Models\PickupWaste;
+use App\Models\PickupDetail;
+use App\Models\Waste;
+use App\Models\Community;
+use App\Models\Courier;
 use App\Models\Store;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +24,7 @@ class DropboxService
     {
         try {
             $user = Auth()->user();
-            $sort = $filters['sort'] ?? 'desc';
+            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
 
             // sanitize data
             if (isset($limit)) {
@@ -194,6 +196,15 @@ class DropboxService
             return [false, 'Dropbox tidak ditemukan', [$id]];
         }
 
+        $pickupId = PickupWaste::where(['dropbox_id' => $id])->pluck('pickup_id');
+        $pickupDetail = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('waste_id');
+        $pickupQuantity = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('quantity');
+        $waste = Waste::whereIn('waste_id', $pickupDetail)->get();
+        $community = PickupWaste::where(['dropbox_id' => $id])->pluck('community_id');
+        $communityName = Community::whereIn('community_id', $community)->get();
+        $courier = PickupWaste::where(['dropbox_id' => $id])->pluck('courier_id');
+        $courierName = Courier::whereIn('courier_id', $courier)->pluck('name');
+
         $response = [
             'dropbox_id' => $dropbox->dropbox_id,
             'name' => $dropbox->name,
@@ -205,6 +216,11 @@ class DropboxService
             'status' => $dropbox->status,
             'created_at' => $dropbox->created_at,
             'updated_at' => $dropbox->updated_at,
+            'nama' => $communityName->pluck('name')[0],
+            'alamat' => $communityName->pluck('address')[0],
+            'jenis_sampah' => $waste->pluck('waste_name')[0],
+            'jumlah' => $pickupQuantity[0],
+            'point' => $waste->pluck('point')[0]
         ];
         return [true, "Detail dropbox", $response];
     }

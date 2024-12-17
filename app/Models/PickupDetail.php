@@ -15,4 +15,8 @@ class PickupDetail extends Model
     {
         return $this->belongsTo(Waste::class, 'waste_id', 'waste_id');
     }
+    public function pickupWaste()
+    {
+        return $this->belongsTo(PickupWaste::class, 'pickup_id', 'pickup_id');
+    }
 }
