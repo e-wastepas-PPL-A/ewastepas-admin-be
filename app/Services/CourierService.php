@@ -186,31 +186,26 @@ class CourierService
             }
 
             // Jika data['active'] bukan 'Approve', 'Reject', 'Pending', maka return false
-            if (!in_array($data['status'], ['Approved', 'Reject', 'Pending'])) {
-                return [false, 'Status tidak valid', []];
+            if (!in_array($data['is_verified'], [0, 1])) {
+                return [false, 'is_verified tidak valid', []];
             }
 
-            // $Courier->update([
-            //     'status' => $data['status'],
-            //     'updated_at' => now()
-            // ]);
-
-            DB::statement('CALL approve_courier_registration(?, ?)', [
-                $id,
-                $data['status']
-            ]);
-            
-            if ($data['status'] == 'Approved') {
-                CourierPoints::create([
-                    'courier_id' => $Courier->courier_id,
-                    'total_points' => 0,
-                    'created_at' => now(),
+            if ($data['is_verified'] == 1) {
+                $payload = [
+                    'status' => 'Approved',
+                    'is_verified' => $data['is_verified'],
                     'updated_at' => now()
-                ]);
-            } else if ($data['status'] == 'Reject') {
-                CourierPoints::where(['courier_id' => $Courier->courier_id])->delete();
+                ];
+            } else if ($data['is_verified'] == 0) {
+                $payload = [
+                    'status' => 'Reject',
+                    'is_verified' => $data['is_verified'],
+                    'updated_at' => now()
+                ];
             }
 
+            Courier::where(['courier_id' => $id])->update($payload);
+            
             DB::commit();
             return [true, 'Courier berhasil diubah', []];
         } catch (\Throwable $exception) {

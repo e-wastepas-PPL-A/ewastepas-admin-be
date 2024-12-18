@@ -25,13 +25,13 @@ class UpdateStatusCourierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required',
+            'is_verified' => 'required',
         ];
     }
     public function messages(): array
     {
         return [
-            'status.required' => 'Status is required'
+            'is_verified.required' => 'is_verified is required'
         ];
     }
 
