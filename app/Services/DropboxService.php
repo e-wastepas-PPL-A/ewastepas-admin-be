@@ -228,7 +228,7 @@ class DropboxService
     public function deleteDelete($id)
     {
         try {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             // sanitize data
             $id = htmlspecialchars(strip_tags($id));
             $dropbox = Dropbox::where(['dropbox_id' => $id])->first();
@@ -239,7 +239,7 @@ class DropboxService
 
             DB::statement('CALL delete_dropbox(?)', [$id]);
 
-            DB::commit();
+            // DB::commit();
             return [true, 'Dropbox berhasil dihapus', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
