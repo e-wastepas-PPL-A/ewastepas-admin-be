@@ -197,6 +197,15 @@ class DropboxService
         }
 
         $pickupId = PickupWaste::where(['dropbox_id' => $id])->pluck('pickup_id');
+
+        if ($pickupId->isEmpty()) {
+            return [false, 'Dropbox tidak memiliki pickup', []];
+        }
+
+        if (PickupDetail::whereIn('pickup_id', $pickupId)->isEmpty()) {
+            return [false, 'Dropbox tidak memiliki detail pickup', []];
+        }
+
         $pickupDetail = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('waste_id');
         $pickupQuantity = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('quantity');
         $waste = Waste::whereIn('waste_id', $pickupDetail)->get();
