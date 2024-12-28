@@ -25,9 +25,9 @@ class CreateWasteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'waste_name' => 'required|max:100|regex:/^[a-zA-Z\s]+$/',
+            'waste_name' => 'required|max:100|regex:/^[a-zA-Z0-9\s]+$/',
             'point' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'description' => 'required|max:255|regex:/^[a-zA-Z0-9\s.,\/-]+$/',
             'waste_type_id' => 'required|numeric',
             // 'pickup_id' => 'required|numeric',
@@ -42,7 +42,7 @@ class CreateWasteRequest extends FormRequest
             'point.required' => 'Point is required',
             'point.numeric' => 'Point must be a number',
             'image.image' => 'Image must be an image',
-            'image.mimes' => 'Image must be jpeg, png, jpg, gif, svg',
+            'image.mimes' => 'Image must be jpeg, png, jpg, svg',
             'image.max' => 'Image max 2048 KB',
             'description.required' => 'Description is required',
             'description.max' => 'Description max 255 characters',

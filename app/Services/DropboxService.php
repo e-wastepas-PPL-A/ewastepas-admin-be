@@ -199,12 +199,29 @@ class DropboxService
         $pickupId = PickupWaste::where(['dropbox_id' => $id])->pluck('pickup_id');
 
         if ($pickupId->isEmpty()) {
-            return [false, 'Dropbox tidak memiliki pickup', []];
+            $response = [
+                'dropbox_id' => $dropbox->dropbox_id,
+                'name' => $dropbox->name,
+                'address' => $dropbox->address,
+                'district_address' => $dropbox->district_address,
+                'longitude' => $dropbox->longitude,
+                'latitude' => $dropbox->latitude,
+                'capacity' => $dropbox->capacity,
+                'status' => $dropbox->status,
+                'created_at' => $dropbox->created_at,
+                'updated_at' => $dropbox->updated_at,
+                'nama' => null,
+                'alamat' => null,
+                'jenis_sampah' => null,
+                'jumlah' => null,
+                'point' => null
+            ];
+            return [true, 'Dropbox tidak memiliki pickup', $response];
         }
-
-        if (PickupDetail::whereIn('pickup_id', $pickupId)->isEmpty()) {
-            return [false, 'Dropbox tidak memiliki detail pickup', []];
-        }
+        
+        // if (PickupDetail::whereIn('pickup_id', $pickupId)->isEmpty()) {
+            //     return [false, 'Dropbox tidak memiliki detail pickup', []];
+        // }
 
         $pickupDetail = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('waste_id');
         $pickupQuantity = PickupDetail::whereIn('pickup_id', $pickupId)->pluck('quantity');
@@ -213,7 +230,7 @@ class DropboxService
         $communityName = Community::whereIn('community_id', $community)->get();
         $courier = PickupWaste::where(['dropbox_id' => $id])->pluck('courier_id');
         $courierName = Courier::whereIn('courier_id', $courier)->pluck('name');
-
+        
         $response = [
             'dropbox_id' => $dropbox->dropbox_id,
             'name' => $dropbox->name,

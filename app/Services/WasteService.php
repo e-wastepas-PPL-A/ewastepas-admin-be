@@ -90,7 +90,7 @@ class WasteService
 
             // Proses unggah file gambar (jika ada)
             $photoUrl = null;
-            if (isset($data['image'])) {
+            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
                 $file = $data['image'];
                 $path = $file->store('uploads/waste_photos', 'public');
                 $photoUrl = Storage::url($path); // Dapatkan URL gambar

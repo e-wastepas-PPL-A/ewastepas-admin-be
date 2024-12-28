@@ -30,7 +30,7 @@ class UpdateDropboxRequest extends FormRequest
             'district_address' => 'max:255|regex:/^[a-zA-Z\s]+$/|in:Bandung Utara,Bandung Selatan,Bandung Barat,Bandung Timur,Cimahi,Kabupaten Bandung,Kabupaten Bandung Barat',
             'latitude' => 'numeric|between:-90,90',
             'longitude' => 'numeric|between:-180,180',
-            'capacity' => 'numeric|min:0',
+            'capacity' => 'numeric|between:0,100',
         ];
     }
 
