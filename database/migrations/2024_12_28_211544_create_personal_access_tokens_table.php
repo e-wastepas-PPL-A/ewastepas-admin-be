@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('soft_token_lifetimes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('token');
-            $table->string('type');
-            $table->timestamps();
-        });
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
-            $table->uuidMorphs('tokenable');
+            $table->morphs('tokenable');
             $table->string('name');
             $table->string('token', 64)->unique();
             $table->text('abilities')->nullable();
@@ -35,6 +29,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('personal_access_tokens');
-        Schema::dropIfExists('soft_token_lifetimes');
     }
 };

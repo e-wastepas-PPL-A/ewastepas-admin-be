@@ -22,34 +22,49 @@ class AuthUserService
     public function login($email, $password): array
     {
         try {
-            // login
-
+            // Cari pengguna berdasarkan email dan peran admin
             $userLogin = Management::whereEmail($email)->where('is_admin', 1)->first();
 
-            // if login true
             if ($userLogin) {
-                //> check password
+                // Verifikasi password menggunakan Hash::check
                 // if (Hash::check($password, $userLogin->password)) {
+                if ($password == $userLogin->password) {
+                    // Hapus token lama jika ada
+                    session(['user_id' => $userLogin->id, 'is_admin' => true]);
 
-                //     $this->deleteTokenSanctum($userLogin->id);
-
-                //     $tokenAirlock = $userLogin->createToken('admin', ['accessLoginAdmin']);
-
-                //     $response = [
-                //         'token' => $tokenAirlock->plainTextToken,
-                //         'is_active' => true
-                //     ];
-                //     return [true, 'Login berhasil', $response];
-                // }
-
-                if ($password === $userLogin->password) {
-                    return [true, 'Login berhasil', ['redirect' => 'http://localhost:5173/']];
+                    return [
+                        true,
+                        'Login berhasil',
+                        [
+                            'session_id' => session()->getId(),
+                            'is_active' => true,
+                            // 'redirect' => 'http://localhost:5173/'
+                        ]
+                    ];
+                } else {
+                    return [false, 'Email atau Password Tidak Sesuai', []];
                 }
-                return [false, 'Email atau Password Tidak Sesuai', []];
+            } else {
+                return [false, 'Akun tidak ditemukan', []];
             }
         } catch (\Throwable $exception) {
-            Log::error($exception);
+            Log::error($exception->getMessage());
             return [false, 'Server is busy right now', []];
+        }
+    }
+
+    public function logout()
+    {
+        try {
+            // Implementasi logika logout
+            // Misalnya, hapus sesi pengguna
+            session()->forget(['user_id', 'is_admin']);
+
+            // Kembalikan array
+            return [true, 'Logout berhasil', []];
+        } catch (\Exception $e) {
+            // Tangani error
+            return [false, 'Logout gagal', ['error' => $e->getMessage()]];
         }
     }
 

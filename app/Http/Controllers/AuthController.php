@@ -84,9 +84,13 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $user = request()->user();
-        $user->tokens()->delete();
+        // Akses service
+        [$proceed, $message, $data] = (new AuthUserService())->logout();
 
-        return ResponseJson::successResponse('Berhasil logout', []);
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+
+        return ResponseJson::successResponse($message, $data);
     }
 }

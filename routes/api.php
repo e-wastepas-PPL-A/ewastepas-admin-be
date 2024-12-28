@@ -95,7 +95,7 @@ Route::prefix('auth')->group(function () {
     })->name('login.page');
     
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');;
-    Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ability:accessLoginAdmin']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
 });
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
