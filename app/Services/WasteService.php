@@ -83,15 +83,18 @@ class WasteService
             //     return [false, 'Waste Type tidak ditemukan', []];
             // }
 
-            // sanitize data
-            $data = array_map(function ($item) {
-                return htmlspecialchars(strip_tags($item));
-            }, $data);
+            // sanitize data but not for image
+            foreach ($data as $key => $value) {
+                if ($key !== 'image') {
+                    $data[$key] = htmlspecialchars(strip_tags($value));
+                }
+            }
 
             // Proses unggah file gambar (jika ada)
             $photoUrl = null;
             if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
                 $file = $data['image'];
+                // Unggah file gambar baru
                 $path = $file->store('uploads/waste_photos', 'public');
                 $photoUrl = Storage::url($path); // Dapatkan URL gambar
             }
