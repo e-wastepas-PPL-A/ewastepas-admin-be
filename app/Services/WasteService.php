@@ -126,10 +126,13 @@ class WasteService
         try {
             DB::beginTransaction();
 
-            // sanitize data
-            $data = array_map(function ($item) {
-                return htmlspecialchars(strip_tags($item));
-            }, $data);
+            // Sanitisasi data
+            foreach ($data as $key => $value) {
+                // Tidak termasuk sanitasi untuk file gambar
+                if ($key !== 'image') {
+                    $data[$key] = htmlspecialchars(strip_tags($value));
+                }
+            }
 
             $Waste = Waste::where(['waste_id' => $id])->first();
             if (!$Waste) {
@@ -154,7 +157,7 @@ class WasteService
                 }
 
                 // Unggah file gambar baru
-                $path = $file->store('storage/uploads/waste_photos', 'public');
+                $path = $file->store('uploads/waste_photos', 'public');
                 $photoUrl = Storage::url($path); // Dapatkan URL gambar
                 // Perbaiki URL jika ada garis miring ganda
                 $photoUrl = preg_replace('/([^:])(\/{2,})/', '$1/', $photoUrl);
