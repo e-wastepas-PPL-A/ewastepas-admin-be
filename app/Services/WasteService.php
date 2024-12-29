@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\CurrencyHelper;
-use App\Helpers\LinkHelper;
-use App\Helpers\LinkyiStorage;
 use App\Models\Waste;
 use App\Models\WasteType;
 use Illuminate\Support\Str;
@@ -46,7 +43,7 @@ class WasteService
                                 'waste_id' => $item->waste_id,
                                 'waste_name' => $item->waste_name,
                                 'point' => $item->point,
-                                'image' => $item->image,
+                                'image' => asset('/storage/uploads/waste_photos/' . basename($item->image)) ?? null,
                                 'description' => $item->description,
                                 'waste_type_id' => $item->waste_type_id,
                                 'pickup_id' => $item->pickup_id,
@@ -64,6 +61,7 @@ class WasteService
             $response = [
                 'waste' => $data
             ];
+
             return [true, 'List Waste', $response];
         } catch (\Throwable $exception) {
             Log::error($exception);
@@ -72,19 +70,16 @@ class WasteService
     }
 
 
+    // Fungsi untuk membuat data Waste baru
     public function createWaste($data)
     {
         try {
+            // Mulai transaksi
             DB::beginTransaction();
-            // get uuid Type Waste by Nama_WasteType
-            // $WasteType = WasteType::where('waste_type_name', $data['waste_type_name'])->first();
 
-            // if (!$WasteType) {
-            //     return [false, 'Waste Type tidak ditemukan', []];
-            // }
-
-            // sanitize data but not for image
+            // Sanitisasi data
             foreach ($data as $key => $value) {
+                // Tidak termasuk sanitasi untuk file gambar
                 if ($key !== 'image') {
                     $data[$key] = htmlspecialchars(strip_tags($value));
                 }
@@ -96,9 +91,14 @@ class WasteService
                 $file = $data['image'];
                 // Unggah file gambar baru
                 $path = $file->store('uploads/waste_photos', 'public');
-                $photoUrl = Storage::url($path); // Dapatkan URL gambar
+                // Dapatkan URL gambar
+                $photoUrl = Storage::url($path);
+
+                // Perbaiki URL jika ada garis miring ganda
+                $photoUrl = preg_replace('/([^:])(\/{2,})/', '$1/', $photoUrl);
             }
 
+            // Buat data Waste baru
             Waste::create([
                 'waste_name' => $data['waste_name'],
                 'point' => 0,
@@ -109,7 +109,10 @@ class WasteService
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
+
+            // Commit transaksi
             DB::commit();
+
             return [true, 'Berhasil Menambahkan Waste', []];
         } catch (\Throwable $exception) {
             DB::rollBack();
@@ -151,8 +154,10 @@ class WasteService
                 }
 
                 // Unggah file gambar baru
-                $path = $file->store('uploads/waste_photos', 'public');
+                $path = $file->store('storage/uploads/waste_photos', 'public');
                 $photoUrl = Storage::url($path); // Dapatkan URL gambar
+                // Perbaiki URL jika ada garis miring ganda
+                $photoUrl = preg_replace('/([^:])(\/{2,})/', '$1/', $photoUrl);
             }
 
             $payload = [
@@ -190,7 +195,7 @@ class WasteService
             'waste_id' => $Waste->waste_id,
             'waste_name' => $Waste->waste_name,
             'point' => $Waste->point,
-            'image' => $Waste->image,
+            'image' => asset('storage/uploads/waste_photos' . basename($Waste->image)),
             'description' => $Waste->description,
             'waste_type_id' => $Waste->waste_type_id,
             'pickup_id' => $Waste->pickup_id,
