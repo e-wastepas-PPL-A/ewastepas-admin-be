@@ -170,7 +170,7 @@ class CommunityService
             }
 
             // Check if community account_number, nik, ktp_url, kk_url, photo, is_verified is empty
-            if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address) || empty($Community->photo)) {
+            if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address)) {
                 return [false, 'Community belum melengkapi data', []];
             }
             
@@ -179,15 +179,15 @@ class CommunityService
                 return [false, 'Verifikasi tidak valid', []];
             }
 
-            // $Community->update([
-            //     'is_verified' => $data['is_verified'],
-            //     'updated_at' => now()
-            // ]);
-            
-            DB::statement('CALL approve_community_registration(?, ?)', [
-                $id,
-                $data['is_verified']
+            $Community->update([
+                'is_verified' => $data['is_verified'],
+                'updated_at' => now()
             ]);
+            
+            // DB::statement('CALL approve_community_registration(?, ?)', [
+            //     $id,
+            //     $data['is_verified']
+            // ]);
 
             CommunityPoints::create([
                 'community_id' => $Community->community_id,
