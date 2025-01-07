@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+
+    public function notif()
     {
-        // login
-        [$proceed, $message, $data] = (new DashboardService())->getDashboardSummary();
+        [$proceed, $message, $data] = (new DashboardService())->getNotification();
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
