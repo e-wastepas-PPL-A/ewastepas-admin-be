@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 // Route::group(function () {
 
 Route::prefix('dashboard')->group(function () {
-    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/api/notifikasi-penjemputan', [DashboardController::class, 'notif']);
     Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
     Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
     Route::get('/pickup/histories', [PickupControler::class, 'listPickupHistories']);
@@ -93,7 +93,7 @@ Route::prefix('auth')->group(function () {
     Route::get('/login', function () {
         return view('login');
     })->name('login.page');
-    
+
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');;
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
 });
