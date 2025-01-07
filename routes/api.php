@@ -18,14 +18,19 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware(['auth:sanctum'])->group(function () {
 // Route::group(function () {
 
-Route::get('/permintaan-penjemputan', [PickupControler::class, 'listPickupUser']);
 
 Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
+
 Route::get('/riwayat-penjemputan', [PickupControler::class, 'riwayatPenjemputan']);
 Route::get('/riwayat-penjemputan/{id}', [PickupControler::class, 'detailRiwayatPenjemputan']);
 
 Route::get('/permintaan-penjemputan', [PickupControler::class, 'permintaanPenjemputan']);
 Route::get('/permintaan-penjemputan/{id}', [PickupControler::class, 'detailPermintaanPenjemputan']);
+
+Route::get('/penerimaan-penjemputan', [PickupControler::class, 'penerimaanPenjemputan']);
+Route::get('/penerimaan-penjemputan/{id}', [PickupControler::class, 'detailPenerimaanPenjemputan']);
+
+Route::get('/pelacakan-penjemputan/{id}', [PickupControler::class, 'detailPermintaanPenjemputan']);
 
 
 Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);

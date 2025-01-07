@@ -51,7 +51,7 @@ class PickupService
             return [false, 'Server is busy right now', []];
         }
     }
-    public function listPickupWasteRequest($limit, $search)
+    public function penerimaanPenjemputan($limit, $search)
     {
         try {
             // $user = Auth()->user();
@@ -62,6 +62,45 @@ class PickupService
                 ->when($search, function ($query) use ($search) {
                     return $query->whereHas('courier', function ($query) use ($search) {
                         $query->where("name", 'LIKE', "%$search%"); // Search for community name
+                    });
+                })
+                ->paginate($limit);
+            // Transform the paginated collection
+            $data->getCollection()->transform(function ($item) {
+                return [
+                    'pickup_id' => $item->pickup_id,
+                    'customer_name' => $item->community->name,
+                    'courier_name' => $item->courier->name,
+                    'courier_phone' => $item->courier->phone,
+                    'total_waste' => $item->pickupDetail->sum('quantity'),
+                    'status' => $item->pickup_status,
+                    'pickup_address' => $item->pickup_pickup_address,
+                    'date' => $item->pickup_date ?? $item->created_at
+                ];
+            });
+
+            $data->withPath($limit);
+
+            $response = [
+                'pickups' => $data
+            ];
+            return [true, 'Riwayat penjemputan', $response];
+        } catch (\Throwable $exception) {
+            Log::error($exception);
+            return [false, 'Server is busy right now', []];
+        }
+    }
+    public function listPickupWasteRequest($limit, $search)
+    {
+        try {
+            // $user = Auth()->user();
+
+            // Start the query builder
+            $data = PickupWaste::query()
+                ->with(['courier', 'community', 'pickupDetail']) // Ensure that the related 'community' model is loaded
+                ->when($search, function ($query) use ($search) {
+                    return $query->whereHas('community', function ($query) use ($search) {
+                        $query->where("name", 'LIKE', "%$search%");
                     });
                 })
                 ->paginate($limit);
@@ -88,6 +127,7 @@ class PickupService
             return [false, 'Server is busy right now', []];
         }
     }
+
     public function listPickupHistories($limit, $search)
     {
         try {
