@@ -53,7 +53,8 @@ class PickupControler extends Controller
         }
         return ResponseJson::successResponse($message, $data);
     }
-    public function listPickupHistories(Request $request)
+
+    public function riwayatPenjemputan(Request $request)
     {
         if (!$limit = request()->limit) {
             $limit = 10;
@@ -68,11 +69,12 @@ class PickupControler extends Controller
         }
         return ResponseJson::successResponse($message, $data);
     }
-    public function detailPickupUser($id)
+
+    public function detailRiwayatPenjemputan($id)
     {
 
         // login
-        [$proceed, $message, $data] = (new PickupService())->detailPickupUser($id);
+        [$proceed, $message, $data] = (new PickupService())->detailPickup($id);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }

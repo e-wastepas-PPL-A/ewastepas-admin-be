@@ -18,15 +18,18 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware(['auth:sanctum'])->group(function () {
 // Route::group(function () {
 
-Route::prefix('dashboard')->group(function () {
-    Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
-    Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
-    Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
-    Route::get('/pickup/histories', [PickupControler::class, 'listPickupHistories']);
-    Route::get('/pickup/{id}', [PickupControler::class, 'detailPickupUser']);
-    Route::get('/waste-point', [PickupControler::class, 'wastePoint']);
-    Route::get('/waste-point/{id}', [PickupControler::class, 'detailWastePoint']);
-});
+Route::get('/permintaan-penjemputan', [PickupControler::class, 'listPickupUser']);
+
+Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
+Route::get('/riwayat-penjemputan', [PickupControler::class, 'riwayatPenjemputan']);
+Route::get('/riwayat-penjemputan/{id}', [PickupControler::class, 'detailRiwayatPenjemputan']);
+
+
+Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
+Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
+Route::get('/pickup/{id}', [PickupControler::class, 'detailPickupUser']);
+Route::get('/waste-point', [PickupControler::class, 'wastePoint']);
+Route::get('/waste-point/{id}', [PickupControler::class, 'detailWastePoint']);
 
 //> profile
 Route::prefix('profile')->group(function () {

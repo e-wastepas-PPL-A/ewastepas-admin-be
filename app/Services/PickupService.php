@@ -58,20 +58,31 @@ class PickupService
 
             // Start the query builder
             $data = PickupWaste::query()
-                ->with('courier') // Ensure that the related 'community' model is loaded
+                ->with(['courier', 'community', 'pickupDetail']) // Ensure that the related 'community' model is loaded
                 ->when($search, function ($query) use ($search) {
                     return $query->whereHas('courier', function ($query) use ($search) {
                         $query->where("name", 'LIKE', "%$search%"); // Search for community name
                     });
                 })
                 ->paginate($limit);
+            // Transform the paginated collection
+            $data->getCollection()->transform(function ($item) {
+                return [
+                    'pickup_id' => $item->pickup_id,
+                    'customer_name' => $item->community->name,
+                    'driver_name' => $item->courier->name,
+                    'total_waste' => $item->pickupDetail->sum('quantity'),
+                    'status' => $item->pickup_status,
+                    'date' => $item->pickup_date
+                ];
+            });
 
             $data->withPath($limit);
 
             $response = [
                 'pickups' => $data
             ];
-            return [true, 'List pickups', $response];
+            return [true, 'Riwayat penjemputan', $response];
         } catch (\Throwable $exception) {
             Log::error($exception);
             return [false, 'Server is busy right now', []];
@@ -141,15 +152,38 @@ class PickupService
         }
     }
 
-    public function detailPickupUser($id)
+    public function detailPickup($id)
     {
-        $data = PickupWaste::with('community', 'courier', 'pickupDetail.waste')->where(['pickup_id' => $id])->first();
+        $data = PickupWaste::with('community', 'courier', 'dropbox', 'pickupDetail.waste')->where(['pickup_id' => $id])->first();
         if (!$data) {
             return [false, 'Data tidak ditemukan', [$id]];
         }
 
-        return [true, "Detail pickups", $data];
+        $response = [
+            'id' => $data->pickup_id,
+            'customer_name' => $data->community->name,
+            'customer_phone' => $data->community->phone,
+            'pickup_date' => $data->community->name,
+            'total_waste' => $data->pickupDetail->sum('quantity'),
+            'total_point' => $data->pickupDetail->sum('points'),
+            'courier_name' => $data->courier->name,
+            'courier_phone' => $data->courier->phone,
+            'dropbox' => $data->dropbox->name,
+            'dropbox_address' => $data->dropbox->address,
+            'status' => $data->pickup_status,
+            'date' => $data->pickup_date,
+            'waste' => $data->pickupDetail->map(function ($item) {
+                return [
+                    'id' => $item->waste->waste_id,
+                    'waste_name' => $item->waste->waste_name,
+                    'image' => $item->waste->image,
+                    'point' => $item->waste->point,
+                ];
+            })
+        ];
+        return [true, "Detail pickups", $response];
     }
+
     public function detailWastePoint($id)
     {
         $data = PickupWaste::with('community', 'pickupDetail.waste')->where(['pickup_id' => $id])->first();
