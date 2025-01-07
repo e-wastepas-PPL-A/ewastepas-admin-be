@@ -45,7 +45,7 @@ class PickupService
                 'dropboxs' => $dropboxs,
                 'pickups' => $data
             ];
-            return [true, 'List pickups', $response];
+            return [true, 'List custommer point', $response];
         } catch (\Throwable $exception) {
             Log::error($exception);
             return [false, 'Server is busy right now', []];

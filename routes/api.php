@@ -32,12 +32,9 @@ Route::get('/penerimaan-penjemputan/{id}', [PickupControler::class, 'detailPener
 
 Route::get('/pelacakan-penjemputan/{id}', [PickupControler::class, 'detailPermintaanPenjemputan']);
 
-
-Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
-Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
-Route::get('/pickup/{id}', [PickupControler::class, 'detailPickupUser']);
-Route::get('/waste-point', [PickupControler::class, 'wastePoint']);
-Route::get('/waste-point/{id}', [PickupControler::class, 'detailWastePoint']);
+Route::get('/total-poin/{id}/customer', [PickupControler::class, 'detailPermintaanPenjemputan']);
+Route::get('/total-poin', [PickupControler::class, 'wastePoint']);
+Route::get('/total-poin/{id}', [PickupControler::class, 'detailWastePoint']);
 
 //> profile
 Route::prefix('profile')->group(function () {
