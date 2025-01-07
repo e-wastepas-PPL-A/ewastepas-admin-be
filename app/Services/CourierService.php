@@ -181,7 +181,7 @@ class CourierService
             }
 
             // Check if courier account_number, nik, ktp_url, kk_url, photo, is_verified is empty
-            if (empty($Courier->account_number) || empty($Courier->nik) || empty($Courier->ktp_url) || empty($Courier->kk_url)) {
+            if (empty($Courier->account_number) || empty($Courier->nik) || empty($Courier->ktp_url) || empty($Courier->kk_url) || empty($Courier->photo)) {
                 return [false, 'Courier belum melengkapi data', []];
             }
 
