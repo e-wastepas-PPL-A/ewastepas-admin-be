@@ -54,6 +54,21 @@ class PickupControler extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
+    public function permintaanPenjemputan(Request $request)
+    {
+        if (!$limit = request()->limit) {
+            $limit = 10;
+        }
+        if (!$search = request()->search) {
+            $search = null;
+        }
+        // login
+        [$proceed, $message, $data] = (new PickupService())->listPickupWasteRequest($limit, $search);
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
     public function riwayatPenjemputan(Request $request)
     {
         if (!$limit = request()->limit) {
@@ -70,6 +85,16 @@ class PickupControler extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
+    public function detailPermintaanPenjemputan($id)
+    {
+
+        // login
+        [$proceed, $message, $data] = (new PickupService())->detailPickup($id);
+        if (!$proceed) {
+            return ResponseJson::failedResponse($message, $data);
+        }
+        return ResponseJson::successResponse($message, $data);
+    }
     public function detailRiwayatPenjemputan($id)
     {
 

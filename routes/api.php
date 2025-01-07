@@ -24,6 +24,9 @@ Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
 Route::get('/riwayat-penjemputan', [PickupControler::class, 'riwayatPenjemputan']);
 Route::get('/riwayat-penjemputan/{id}', [PickupControler::class, 'detailRiwayatPenjemputan']);
 
+Route::get('/permintaan-penjemputan', [PickupControler::class, 'permintaanPenjemputan']);
+Route::get('/permintaan-penjemputan/{id}', [PickupControler::class, 'detailPermintaanPenjemputan']);
+
 
 Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
 Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
