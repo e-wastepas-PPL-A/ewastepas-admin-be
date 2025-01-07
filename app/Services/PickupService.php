@@ -30,12 +30,9 @@ class PickupService
             $data->getCollection()->transform(function ($item) {
                 return [
                     'pickup_id' => $item->pickup_id,
-                    'community_id' => $item->community_id,
                     'name' => $item->community->name, // Access community name from related model
-                    'point' => $item->pickup_address,
-                    'status' => $item->pickup_status,
-                    'pickup_detail' => $item->pickupDetail,
-                    'date' => $item->created_at
+                    'point' => $item->pickupDetail->sum('quantity'),
+                    'date' =>  $item->pickup_date ?? $item->created_at
                 ];
             });
 
@@ -74,7 +71,7 @@ class PickupService
                     'courier_phone' => $item->courier->phone,
                     'total_waste' => $item->pickupDetail->sum('quantity'),
                     'status' => $item->pickup_status,
-                    'pickup_address' => $item->pickup_pickup_address,
+                    'pickup_address' => $item->pickup_address,
                     'date' => $item->pickup_date ?? $item->created_at
                 ];
             });
