@@ -170,7 +170,7 @@ class CommunityService
             }
 
             // Check if community account_number, nik, ktp_url, kk_url, photo, is_verified is empty
-            if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address) || empty($Community->photo)) {
+            if (empty($Community->name) || empty($Community->email) || empty($Community->phone) || empty($Community->date_of_birth) || empty($Community->address)) {
                 return [false, 'Community belum melengkapi data', []];
             }
             
