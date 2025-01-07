@@ -17,13 +17,17 @@ class WasteService
     {
         try {
             $user = Auth()->user();
-            $sort = isset($filters['sort']) ? $filters['sort'] : 'asc';
+            $sort = isset($filter['sort']) ? $filter['sort'] : 'asc';
 
             // sanitize data
             if (isset($limit)) {
                 $limit = htmlspecialchars(strip_tags($limit));
             } else if (isset($search)) {
                 $search = htmlspecialchars(strip_tags($search));
+            } else if (isset($filter)) {
+                $filter = array_map(function ($item) {
+                    return htmlspecialchars(strip_tags($item));
+                }, $filter);
             }
 
             $data = tap(
@@ -33,6 +37,12 @@ class WasteService
                     })
                     ->when($sort, function ($query) use ($sort) {
                         return $query->orderBy('created_at', $sort);
+                    })
+                    ->when(isset($filter['waste_type_id']), function ($query) use ($filter) {
+                        return $query->where('waste_type_id', $filter['waste_type_id']);
+                    })
+                    ->when(isset($filter['pickup_id']), function ($query) use ($filter) {
+                        return $query->where('pickup_id', $filter['pickup_id']);
                     })
                     ->paginate($limit),
                 function ($paginatedInstance) {
