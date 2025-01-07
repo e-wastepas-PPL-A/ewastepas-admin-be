@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 // Route::group(function () {
 
 Route::prefix('dashboard')->group(function () {
-    Route::get('/api/notifikasi-penjemputan', [DashboardController::class, 'notif']);
+    Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
     Route::get('/pickup/user', [PickupControler::class, 'listPickupUser']);
     Route::get('/pickup/courier', [PickupControler::class, 'listPickupCourier']);
     Route::get('/pickup/histories', [PickupControler::class, 'listPickupHistories']);
