@@ -26,7 +26,6 @@ class CreateWasteRequest extends FormRequest
     {
         return [
             'waste_name' => 'required|max:100|regex:/^[a-zA-Z\s]+$/',
-            'point' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'description' => 'required|max:255|regex:/^[a-zA-Z0-9\s.,\/-]+$/',
             'waste_type_id' => 'required|numeric',
@@ -39,8 +38,6 @@ class CreateWasteRequest extends FormRequest
         return [
             'waste_name.required' => 'Waste name is required',
             'waste_name.max' => 'Waste name max 100 characters',
-            'point.required' => 'Point is required',
-            'point.numeric' => 'Point must be a number',
             'image.image' => 'Image must be an image',
             'image.mimes' => 'Image must be jpeg, png, jpg, svg',
             'image.max' => 'Image max 2048 KB',
