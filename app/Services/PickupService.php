@@ -108,7 +108,7 @@ class PickupService
                     'customer_name' => $item->community->name,
                     'total_waste' => $item->pickupDetail->sum('quantity'),
                     'status' => $item->pickup_status,
-                    'pickup_address' => $item->pickup_pickup_address,
+                    'pickup_address' => $item->pickup_address,
                     'date' => $item->pickup_date ?? $item->created_at
                 ];
             });
