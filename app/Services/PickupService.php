@@ -211,14 +211,14 @@ class PickupService
 
         $response = [
             'id' => $data->pickup_id,
-            'customer_name' => $data->community->name,
-            'customer_phone' => $data->community->phone,
-            'total_waste' => $data->pickupDetail->sum('quantity'),
-            'total_point' => $data->pickupDetail->sum('points'),
-            'courier_name' => $data->courier->name,
-            'courier_phone' => $data->courier->phone,
-            'dropbox' => $data->dropbox->name,
-            'dropbox_address' => $data->dropbox->address,
+            'customer_name' => $data?->community?->name,
+            'customer_phone' => $data?->community?->phone,
+            'total_waste' => $data?->pickupDetail->sum('quantity'),
+            'total_point' => $data?->pickupDetail->sum('points'),
+            'courier_name' => $data?->courier?->name,
+            'courier_phone' => $data?->courier?->phone,
+            'dropbox' => $data?->dropbox?->name,
+            'dropbox_address' => $data?->dropbox?->address,
             'status' => $data->pickup_status,
             'date' => $data->pickup_date ?? $data->created_at,
             'waste' => $data->pickupDetail->map(function ($item) {
