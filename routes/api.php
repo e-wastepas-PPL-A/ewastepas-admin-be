@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/notifikasi-penjemputan', [DashboardController::class, 'notif']);
+Route::get('/notifikasi-penjemputan/{id}', [PickupControler::class, 'detailRiwayatPenjemputan']);
 
 Route::get('/riwayat-penjemputan', [PickupControler::class, 'riwayatPenjemputan']);
 Route::get('/riwayat-penjemputan/{id}', [PickupControler::class, 'detailRiwayatPenjemputan']);
