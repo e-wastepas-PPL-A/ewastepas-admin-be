@@ -49,19 +49,19 @@ Route::prefix('profile')->group(function () {
 Route::prefix('community')->group(function () {
     Route::get('', [CommunityController::class, 'index']);
     Route::get('/{id}', [CommunityController::class, 'show']);
-    Route::post('/create', [CommunityController::class, 'create']);
-    Route::post('/update/{id}', [CommunityController::class, 'update']);
+    // Route::post('/create', [CommunityController::class, 'create']);
+    // Route::post('/update/{id}', [CommunityController::class, 'update']);
     Route::post('/update-status/{id}', [CommunityController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [CommunityController::class, 'delete']);
+    // Route::delete('/delete/{id}', [CommunityController::class, 'delete']);
 });
 
 Route::prefix('courier')->group(function () {
     Route::get('', [CourierController::class, 'index']);
     Route::get('/{id}', [CourierController::class, 'show']);
-    Route::post('/create', [CourierController::class, 'create']);
-    Route::post('/update/{id}', [CourierController::class, 'update']);
+    // Route::post('/create', [CourierController::class, 'create']);
+    // Route::post('/update/{id}', [CourierController::class, 'update']);
     Route::post('/update-status/{id}', [CourierController::class, 'updateStatus']);
-    Route::delete('/delete/{id}', [CourierController::class, 'delete']);
+    // Route::delete('/delete/{id}', [CourierController::class, 'delete']);
 });
 
 Route::prefix('waste')->group(function () {
@@ -98,9 +98,9 @@ Route::prefix('dropbox')->group(function () {
 
 Route::prefix('auth')->group(function () {
 
-    Route::get('/login', function () {
-        return view('login');
-    })->name('login.page');
+    // Route::get('/login', function () {
+    //     return view('login');
+    // })->name('login.page');
 
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');;
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');

@@ -38,7 +38,6 @@ class AuthUserService
                         [
                             'session_id' => session()->getId(),
                             'is_active' => true,
-                            // 'redirect' => 'http://localhost:5173/'
                         ]
                     ];
                 } else {

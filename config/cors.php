@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173'],
+    'allowed_origins' => ['http://localhost:5173', 'http://34.16.66.175:8030'],
 
     'allowed_origins_patterns' => ['*linkyi.shop*'],
 
