@@ -31,7 +31,7 @@ class PickupService
                 return [
                     'pickup_id' => $item->pickup_id,
                     'name' => $item->community->name, // Access community name from related model
-                    'point' => $item->pickupDetail->sum('quantity'),
+                    'point' => $item->pickupDetail->sum('points'),
                     'date' =>  $item->pickup_date ?? $item->created_at
                 ];
             });
@@ -239,6 +239,8 @@ class PickupService
         if (!$data) {
             return [false, 'Data tidak ditemukan', []];
         }
+
+        $data->total_point = $data?->pickupDetail->sum('points');
 
         return [true, "Detail point", $data];
     }
