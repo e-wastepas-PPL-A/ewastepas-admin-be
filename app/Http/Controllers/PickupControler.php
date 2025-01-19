@@ -131,11 +131,15 @@ class PickupControler extends Controller
         return ResponseJson::successResponse($message, $data);
     }
 
-    public function detailWastePoint($id)
+    public function detailWastePoint(Request $request, $id)
     {
-
-        // login
-        [$proceed, $message, $data] = (new PickupService())->detailWastePoint($id);
+        if (!$limit = request()->limit) {
+            $limit = 10;
+        }
+        if (!$search = request()->search) {
+            $search = null;
+        }
+        [$proceed, $message, $data] = (new PickupService())->detailWastePoint($id, $search, $limit);
         if (!$proceed) {
             return ResponseJson::failedResponse($message, $data);
         }
