@@ -242,6 +242,7 @@ class PickupService
             return [false, 'Data tidak ditemukan', []];
         }
         $pickupDetails = PickupDetail::query()
+            ->where('pickup_id', $data->id)
             ->when($search, function ($query) use ($search, $id) {
                 $query->where("quantity", 'LIKE', "%$search%")->orWhere('pickup_id', $id); // Search for community name
             })
