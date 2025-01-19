@@ -19,9 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://34.16.66.175:8030'],
+    'allowed_origins' => ['http://localhost:5173', 'https://admin-api.ewhale.my.id/', 'http://admin-api.ewhale.my.id/'],
 
-    'allowed_origins_patterns' => ['*linkyi.shop*'],
+    'allowed_origins_patterns' => ['*ewhale.my.id*'],
 
     'allowed_headers' => ['*'],
 
